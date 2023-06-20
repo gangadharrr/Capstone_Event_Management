@@ -181,7 +181,7 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
             return string.Format(
                 CultureInfo.InvariantCulture,
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Microsoft.AspNetCore.Identity.UI"),
+                _urlEncoder.Encode("Capstone Event Management"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
