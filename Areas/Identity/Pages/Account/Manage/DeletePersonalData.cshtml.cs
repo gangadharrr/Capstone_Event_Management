@@ -6,10 +6,12 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Capstone_Event_Management.Models;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using static Duende.IdentityServer.Models.IdentityResources;
 
 namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
 {
@@ -19,6 +21,8 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
 
+        public Cloudinary cloudinary;
+
         public DeletePersonalDataModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -27,6 +31,7 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            cloudinary = new Cloudinary();
         }
 
         /// <summary>
@@ -89,16 +94,27 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
 
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
+            var ApiDeleteResponse=cloudinary.DeleteResources($"Images/{user.UserName}");
+            //var ApiDeleteResponse=ClientDeleteRequest("v1_1/dujyzevpx/resources/image/upload/Images/tagbotroadster@gmail.com");
+            Console.WriteLine(ApiDeleteResponse.ToString());
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user.");
             }
-
+            
             await _signInManager.SignOutAsync();
 
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 
             return Redirect("~/");
+        }
+        private static HttpResponseMessage ClientDeleteRequest(string RequestURI)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://api.cloudinary.com/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            HttpResponseMessage response = client.DeleteAsync(RequestURI).Result;
+            return response;
         }
     }
 }

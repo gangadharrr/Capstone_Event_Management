@@ -23,8 +23,52 @@
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
+    <div class="col-md-6" align="center">
+        <div id="bttn-container">
+            
+            <img id="profile-picture" type="image" src='@Model.profilePicture' alt="Profile Picture">
+            <label for="image-input">
+                <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="50px" width="50px">
+            </label>
+            <form id="image-input-form" method="post" enctype="multipart/form-data">
+                <input id="image-input" asp-for="Input.ProfilePicture" type="file" accept="image/*" onchange="document.getElementById('image-input-form').submit()" height="50px" width="50px" hidden />
+            </form>
+        </div>
+    </div>
+    
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    #profile-picture {
+        height: 200px;
+        width: 200px;
+        border-radius: 50%;
+    }
+
+    #bttn-container {
+        height: 200px;
+        width: 200px;
+        background-color: white;
+        position: relative;
+    }
+
+        #bttn-container:hover > #profile-picture {
+            -webkit-filter: grayscale(1);
+            -webkit-transform: scale(1.01);
+        }
+
+        #bttn-container:hover > #image-input {
+            display: block;
+        }
+
+    #image-input {
+        display: none;
+        position: absolute;
+        top: 80px;
+        left: 80px;
+    }
+</style>

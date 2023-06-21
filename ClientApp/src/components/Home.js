@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import {LoadingAnimation } from './LoadingAnimation/LoadingAnimation';
 export class Home extends Component {
   static displayName = Home.name;
 
