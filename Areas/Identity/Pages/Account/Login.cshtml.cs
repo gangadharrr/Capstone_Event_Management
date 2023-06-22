@@ -66,7 +66,8 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [EmailAddress]
+            // [EmailAddress]
+            [RegularExpression(@"^(?:[a-zA-Z\d]+[a-zA-Z\d_-]*|[a-zA-Z0-9._-]+[@][a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})$", ErrorMessage = "Invalid Username or Email")]
             public string Email { get; set; }
 
             /// <summary>
@@ -112,7 +113,7 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email.Split('@').FirstOrDefault(), Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

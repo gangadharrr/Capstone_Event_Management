@@ -13,8 +13,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+    {
+        options.IdleTimeout = TimeSpan.FromSeconds(5);
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    }
+);
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddIdentityServer()
@@ -42,7 +50,7 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthentication();
 app.UseIdentityServer();
 app.UseAuthorization();
@@ -50,6 +58,17 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Admin", "President", "Professor" ,"Student","Member"};
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+
+    }
+}
 app.MapRazorPages();
 
 app.MapFallbackToFile("index.html");

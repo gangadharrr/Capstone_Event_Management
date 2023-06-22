@@ -57,7 +57,7 @@ export class Login extends Component {
           return (<LoadingAnimation text='Processing login callback'/>);
         case LoginActions.Profile:
         case LoginActions.Register:
-          return (<div></div>);
+          return (<LoadingAnimation text='Loading Register Page'/>);
         default:
           throw new Error(`Invalid action '${action}'`);
       }
