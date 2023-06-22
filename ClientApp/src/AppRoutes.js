@@ -2,6 +2,8 @@ import ApiAuthorzationRoutes from './components/api-authorization/ApiAuthorizati
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
+import {StudentsCreateView,StudentsDeleteView,StudentsEditView,StudentsIndexView,StudentsDetailsView } from '../src/Views/StudentsViews/StudentsViews';
+
 
 const AppRoutes = [
   {
@@ -11,6 +13,31 @@ const AppRoutes = [
   {
     path: '/counter',
     element: <Counter />
+  },
+  {
+    path: '/students-index-view',
+    requireAuth: true,
+    element: <StudentsIndexView />
+  },
+  {
+    path: '/students-edit-view',
+    requireAuth: true,
+    element: <StudentsEditView />
+  },
+  {
+    path: '/students-details-view',
+    requireAuth: false,
+    element: <StudentsDetailsView />
+  },
+  {
+    path: '/students-create-view',
+    requireAuth: true,
+    element: <StudentsCreateView />
+  },
+  {
+    path: '/students-delete-view',
+    requireAuth: true,
+    element: <StudentsDeleteView />
   },
   {
     path: '/fetch-data',

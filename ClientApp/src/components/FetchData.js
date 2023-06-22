@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
+import axios from "axios";
 
 export class FetchData extends Component {
   static displayName = FetchData.name;
@@ -60,4 +61,5 @@ export class FetchData extends Component {
     const data = await response.json();
     this.setState({ forecasts: data, loading: false });
   }
+  
 }

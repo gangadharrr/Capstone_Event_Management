@@ -24,7 +24,6 @@ namespace Capstone_Event_Management.Models
         [Required(ErrorMessage = "RollNumber is Required")]
         public int RollNumber { get; set; }
 
-        [ForeignKey("Degrees")]
         [Display(Name = "Degree")]
         [Required(ErrorMessage = "Degree is Required")]
         public string NormalizedDegree { get; set; }
