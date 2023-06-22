@@ -131,7 +131,7 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
                     var uploadParams = new ImageUploadParams()
                     {
                         File = new FileDescription(this.Request.Form.Files[0].FileName, stream),
-                        PublicId= profilePicture.Replace(".jpg",""),
+                        PublicId= user.Email,
                         Folder = "Images"
                     };
                     var uploadResult = cloudinary.Upload(uploadParams);

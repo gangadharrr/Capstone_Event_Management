@@ -10,15 +10,17 @@
     {
         returnUrl = query["returnUrl"];
     }
+    ApplicationUser? identityUser = null;
 }
 
-<ul class="navbar-nav">
+<ul class="navbar-nav" id="profile-display-nav">
     @if (SignInManager.IsSignedIn(User))
     {
+        identityUser = await UserManager.GetUserAsync(User);
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity!.Name!</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" ><img id="profile-picture-nav" src=@identityUser.ProfileUrl> @identityUser?.DisplayName</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" >
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
             </form>
@@ -34,3 +36,17 @@
         </li>
     }
 </ul>
+<style>
+    #profile-picture-nav {
+        height: 39px;
+        width: 39px;
+        border-radius: 25px;
+    }
+    #profile-display-nav
+    {
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+        justify-content:space-between;
+    }
+</style>

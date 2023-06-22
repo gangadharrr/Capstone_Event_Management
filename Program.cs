@@ -61,7 +61,7 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "Admin", "President", "Professor" ,"Student","Member"};
+    var roles = new[] { "Admin", "President", "Professor", "Student", "Member" };
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
