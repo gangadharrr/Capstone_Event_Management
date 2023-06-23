@@ -5,8 +5,8 @@ import authService from '../../components/api-authorization/AuthorizeService';
 import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
-
 export function StudentsIndexView() {
+    const navigate = useNavigate()
     const [data, setData] = useState(null)
     const [spinner, setSpinner] = useState(true);
     var rows = []
@@ -19,8 +19,9 @@ export function StudentsIndexView() {
                 setSpinner(false)
             })
         })
-    }, [])
-    if (data) {
+    })
+    if(data){
+
         data.map((val) => {
             rows.push(
                 <tr>
@@ -31,27 +32,38 @@ export function StudentsIndexView() {
                         {val.email}
                     </td>
                     <td>
+                        {val.rollNumber}
+                    </td>
+                    <td>
                         {val.batch}
                     </td>
                     <td>
                         <Link className='btn btn-primary' to={"/students-edit-view?id=" + val.email} >Edit</Link> |&nbsp;
                         <Link className='btn btn-warning' to={"/students-details-view?id=" + val.email}>Details</Link> |&nbsp;
-                        <Link className='btn btn-danger' to='/students-delete-view'>Delete</Link>
-
+                        <button className='btn btn-danger'
+                         onClick={() => { 
+                            authService.getAccessToken().then(token => {
+                                axios.delete(`students/${val.email}`, {
+                                    headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                                }).then((response) => {
+                                    console.log(response.data);
+                                    navigate("/students-index-view");
+                                })
+                            })
+                         }}
+                        >Delete</button>
+    
                     </td>
                 </tr>
-
+    
             )
         })
     }
-
-
-
     return (
         <React.Fragment>
             <h1>Students</h1>
-            <p>
-                <Link className='btn btn-primary' to="/students-create-view">Create New</Link>
+            <p style={{ textAlign: 'right' }}>
+                <Link className='btn btn-primary' to="/students-create-view">+ Create New</Link>&nbsp;
             </p>
             <table className="table">
                 <thead>
@@ -79,7 +91,7 @@ export function StudentsIndexView() {
     )
 }
 export function StudentsCreateView() {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const [data, setData] = useState({
         name: null,
         email: null,
@@ -90,13 +102,13 @@ export function StudentsCreateView() {
         normalizedBranch: null,
     })
     const [errors, setErrors] = useState({
-        name: '',
-        email: '',
-        batch: '',
-        section: '',
-        rollNumber: '',
-        normalizedDegree: '',
-        normalizedBranch: '',
+        name: null,
+        email: null,
+        batch: null,
+        section: null,
+        rollNumber: null,
+        normalizedDegree:null,
+        normalizedBranch: null,
     })
     var sections = []
     for (var item of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']) {
@@ -136,27 +148,29 @@ export function StudentsCreateView() {
         console.log(errors)
     }
     function submitForm() {
-        console.log(data)
-        console.log(errors)
-        authService.getAccessToken().then(token => {
-            console.log(token)
-            axios.post('students', {
-                name: data.name,
-                email: data.email,
-                batch: data.batch,
-                section: data.section,
-                rollNumber: parseInt(data.rollNumber),
-                normalizedDegree: data.normalizedDegree,
-                normalizedBranch: data.normalizedBranch,
-            },
-                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-            ).then((response) => {
-                console.log(response)
+        if (errors.name === '' && errors.email === '' && errors.batch === '' && errors.section === '' && errors.rollNumber === '' && errors.normalizedDegree === '' && errors.normalizedBranch === '') {
+            authService.getAccessToken().then(token => {
+                axios.post('students', {
+                    name: data.name,
+                    email: data.email,
+                    batch: data.batch,
+                    section: data.section,
+                    rollNumber: parseInt(data.rollNumber),
+                    normalizedDegree: data.normalizedDegree,
+                    normalizedBranch: data.normalizedBranch,
+                },
+                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                ).then((response) => {
+                    console.log(response)
+                    navigate('/students-index-view')
+                }
+                )
             }
             )
         }
-        )
-        navigate('/students-index-view')
+        else {
+            alert('Invalid Data Entered');
+        }
     }
     return (
         <React.Fragment>
@@ -166,23 +180,21 @@ export function StudentsCreateView() {
             <hr />
             <div className="row">
                 <div className="col-md-4">
-                    <form asp-action="Create">
-                        <div asp-validation-summary="ModelOnly" className="text-danger"></div>
                         <div className="form-group">
                             <input className="form-control" id='name' placeholder="Name" onChange={onChangeHandle} required />
-                            <span htmlFor='name' className="text-danger">{errors.name}</span>
+                            <span  className="text-danger">{errors.name}</span>
                         </div><br />
                         <div className="form-group">
                             <input id="email" className="form-control" placeholder="Email" onChange={onChangeHandle} required />
                             <span htmlFor='email' className="text-danger">{errors.email}</span>
                         </div><br />
                         <div className="form-group">
-                            <input id="rollNumber" type='number' className="form-control" placeholder="Roll Number" onChange={onChangeHandle} required />
+                            <input id="rollNumber" type='number' className="form-control" placeholder="Roll Number"  onChange={onChangeHandle} required />
                             <span htmlFor='rollNumber' className="text-danger">{errors.rollNumber}</span>
                         </div><br />
                         <div className="form-group">
                             <select name="section" id="section" onChange={onChangeHandle} className="form-control" required>
-                                <option defaultValue="" selected disabled hidden>Select Section</option>
+                                <option value="" selected disabled hidden>Select Section</option>
                                 {sections}
                             </select>
                         </div><br />
@@ -204,7 +216,6 @@ export function StudentsCreateView() {
                             <button className="btn btn-primary" onClick={submitForm}>Create</button>&nbsp;&nbsp;
                             <Link className="btn btn-warning" to={"/students-index-view"}>Back to List</Link>
                         </div>
-                    </form>
                 </div>
             </div>
         </React.Fragment>
