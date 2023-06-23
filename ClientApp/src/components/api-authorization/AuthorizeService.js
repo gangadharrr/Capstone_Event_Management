@@ -29,6 +29,7 @@ export class AuthorizeService {
   async getAccessToken() {
     await this.ensureUserManagerInitialized();
     const user = await this.userManager.getUser();
+    // console.log(user)
     return user && user.access_token;
   }
 

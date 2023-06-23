@@ -26,7 +26,7 @@ const AppRoutes = [
   },
   {
     path: '/students-details-view',
-    requireAuth: false,
+    requireAuth: true,
     element: <StudentsDetailsView />
   },
   {

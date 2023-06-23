@@ -5,7 +5,7 @@ import '../LoadingAnimation/LoadingAnimation.css';
 export function LoadingAnimation(props) {
     return (
         <div className='loading-fragment'>
-            {props.type=='puff'?<Puff
+            {props.type==='puff'?<Puff
                 height="80"
                 width="80"
                 radius={1}
@@ -14,7 +14,7 @@ export function LoadingAnimation(props) {
                 wrapperStyle={{}}
                 wrapperClass=""
                 visible={true}
-            />:props.type=='fallinglines'?
+            />:props.type==='fallinglines'?
             <FallingLines
                 height="80"
                 width="80"

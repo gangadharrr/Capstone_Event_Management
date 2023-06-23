@@ -1,20 +1,15 @@
 import React, { useEffect } from 'react'
-import { useState, createContext, useContext } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import authService from '../../components/api-authorization/AuthorizeService';
-import AuthorizeRoute from '../../components/api-authorization/AuthorizeRoute';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
 
 export function StudentsIndexView() {
-    const navigate = useNavigate();
     const [data, setData] = useState(null)
-    const [spinner, setSpinner] = useState(true); 
+    const [spinner, setSpinner] = useState(true);
     var rows = []
-    function onClickHandler(link) {
-        navigate(link);
-    }
     useEffect(() => {
         authService.getAccessToken().then(token => {
             axios.get('students', {
@@ -24,31 +19,31 @@ export function StudentsIndexView() {
                 setSpinner(false)
             })
         })
-    },[])
-    if(data){
-    data.map((val) => {
-        rows.push(
-            <tr>
-                <td>
-                    {val.name}
-                </td>
-                <td>
-                    {val.email}
-                </td>
-                <td>
-                    {val.batch}
-                </td>
-                <td>
-                    <a className='btn btn-primary' onClick={() => onClickHandler("/students-edit-view?id=" + val.email)} >Edit</a> |&nbsp;
-                    <a className='btn btn-warning' onClick={() => onClickHandler("/students-details-view?id=" + val.email)}>Details</a> |&nbsp;
-                    <Link className='btn btn-danger' to='/students-delete-view'>Delete</Link>
+    }, [])
+    if (data) {
+        data.map((val) => {
+            rows.push(
+                <tr>
+                    <td>
+                        {val.name}
+                    </td>
+                    <td>
+                        {val.email}
+                    </td>
+                    <td>
+                        {val.batch}
+                    </td>
+                    <td>
+                        <Link className='btn btn-primary' to={"/students-edit-view?id=" + val.email} >Edit</Link> |&nbsp;
+                        <Link className='btn btn-warning' to={"/students-details-view?id=" + val.email}>Details</Link> |&nbsp;
+                        <Link className='btn btn-danger' to='/students-delete-view'>Delete</Link>
 
-                </td>
-            </tr>
+                    </td>
+                </tr>
 
-        )
-    })
-}
+            )
+        })
+    }
 
 
 
@@ -56,9 +51,9 @@ export function StudentsIndexView() {
         <React.Fragment>
             <h1>Students</h1>
             <p>
-                <a className='btn btn-primary' onClick={() => onClickHandler("/students-create-view")}>Create New</a>
+                <Link className='btn btn-primary' to="/students-create-view">Create New</Link>
             </p>
-            <table class="table">
+            <table className="table">
                 <thead>
                     <tr>
                         <th>
@@ -77,15 +72,142 @@ export function StudentsIndexView() {
                     </tr>
                 </thead>
                 <tbody>
-                {spinner?<LoadingAnimation type='fallinglines' text="Loading..."/>:rows}
+                    {spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> : rows}
                 </tbody>
             </table>
         </React.Fragment>
     )
 }
 export function StudentsCreateView() {
+    const navigate=useNavigate()
+    const [data, setData] = useState({
+        name: null,
+        email: null,
+        batch: null,
+        section: null,
+        rollNumber: null,
+        normalizedDegree: null,
+        normalizedBranch: null,
+    })
+    const [errors, setErrors] = useState({
+        name: '',
+        email: '',
+        batch: '',
+        section: '',
+        rollNumber: '',
+        normalizedDegree: '',
+        normalizedBranch: '',
+    })
+    var sections = []
+    for (var item of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']) {
+        sections.push(<option defaultValue={item}>{item}</option>)
+    }
+    function onChangeHandle(event) {
+        var _data = data
+        var _errors = errors
+        if (event.target.value === '') {
+            _data[event.target.id] = event.target.value
+            _errors[event.target.id] = `${event.target.id} is required`
+            setData(_data)
+            setErrors(_errors)
+        }
+        else if (event.target.id === 'email') {
+            let pattern = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
+            if (pattern.test(event.target.value)) {
+                _data[event.target.id] = event.target.value
+                _errors[event.target.id] = ''
+                setData(_data)
+                setErrors(_errors)
+            }
+            else {
+                _data[event.target.id] = event.target.value
+                _errors[event.target.id] = `${event.target.id} is not valid`
+                setData(_data)
+                setErrors(_errors)
+            }
+        }
+        else {
+            _data[event.target.id] = event.target.value
+            _errors[event.target.id] = ''
+            setData(_data)
+            setErrors(_errors)
+        }
+        console.log(data)
+        console.log(errors)
+    }
+    function submitForm() {
+        console.log(data)
+        console.log(errors)
+        authService.getAccessToken().then(token => {
+            console.log(token)
+            axios.post('students', {
+                name: data.name,
+                email: data.email,
+                batch: data.batch,
+                section: data.section,
+                rollNumber: parseInt(data.rollNumber),
+                normalizedDegree: data.normalizedDegree,
+                normalizedBranch: data.normalizedBranch,
+            },
+                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+            ).then((response) => {
+                console.log(response)
+            }
+            )
+        }
+        )
+        navigate('/students-index-view')
+    }
     return (
-        <div>StudentsCreateView</div>
+        <React.Fragment>
+            <h1>Create</h1>
+
+            <h4>Students</h4>
+            <hr />
+            <div className="row">
+                <div className="col-md-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" className="text-danger"></div>
+                        <div className="form-group">
+                            <input className="form-control" id='name' placeholder="Name" onChange={onChangeHandle} required />
+                            <span htmlFor='name' className="text-danger">{errors.name}</span>
+                        </div><br />
+                        <div className="form-group">
+                            <input id="email" className="form-control" placeholder="Email" onChange={onChangeHandle} required />
+                            <span htmlFor='email' className="text-danger">{errors.email}</span>
+                        </div><br />
+                        <div className="form-group">
+                            <input id="rollNumber" type='number' className="form-control" placeholder="Roll Number" onChange={onChangeHandle} required />
+                            <span htmlFor='rollNumber' className="text-danger">{errors.rollNumber}</span>
+                        </div><br />
+                        <div className="form-group">
+                            <select name="section" id="section" onChange={onChangeHandle} className="form-control" required>
+                                <option defaultValue="" selected disabled hidden>Select Section</option>
+                                {sections}
+                            </select>
+                        </div><br />
+                        <div className="form-group" >
+                            <input id="batch" className="form-control" placeholder="Batch" onChange={onChangeHandle} required />
+                            <span htmlFor='batch' className="text-danger">{errors.batch}</span>
+                            <br />
+                        </div>
+                        <div className="form-group">
+                            <input id='normalizedDegree' className="form-control" placeholder="Degree" onChange={onChangeHandle} required />
+                            <span htmlFor='normalizedDegree' className="text-danger">{errors.normalizedDegree}</span>
+                        </div><br />
+                        <div className="form-group" >
+                            <input id='normalizedBranch' className="form-control" placeholder="Branch" onChange={onChangeHandle} required />
+                            <span htmlFor='normalizedBranch' className="text-danger">{errors.normalizedBranch}</span>
+                            <br />
+                        </div>
+                        <div className="form-group">
+                            <button className="btn btn-primary" onClick={submitForm}>Create</button>&nbsp;&nbsp;
+                            <Link className="btn btn-warning" to={"/students-index-view"}>Back to List</Link>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </React.Fragment>
     )
 }
 export function StudentsEditView() {
@@ -95,8 +217,8 @@ export function StudentsEditView() {
 }
 export function StudentsDetailsView() {
     const location = useLocation()
-    var row=[]
-    const [spinner, setSpinner] = useState(true);  
+    var row = []
+    const [spinner, setSpinner] = useState(true);
     const [data1, setData] = useState(null)
     const queryParameters = new URLSearchParams(location.search)
     async function populateStudent() {
@@ -119,68 +241,68 @@ export function StudentsDetailsView() {
             })
         })
     }, [])
-    if(data1){                
-    row.push(<React.Fragment>
-        <div>
-            <h4>Student Details</h4>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    Name
-                </dt>
-                <dd class="col-sm-10">
-                    {data1.name}
-                </dd>
-                <dt class="col-sm-2">
-                    Email
-                </dt>
-                <dd class="col-sm-10">
-                    {data1.email}
-                </dd>
-                <dt class="col-sm-2">
-                    Batch
-                </dt>
-                <dd class="col-sm-10">
-                    {data1.batch}
-                </dd>
-                <dt class="col-sm-2">
-                    Section
-                </dt>
-                <dd class="col-sm-10">
-                    {data1.section}
-                </dd>
-                <dt class="col-sm-2">
-                    Roll Number
-                </dt>
-                <dd class="col-sm-10">
-                    {data1.rollNumber}
-                </dd>
-                <dt class="col-sm-2">
-                    Degree
-                </dt>
-                <dd class="col-sm-10">
-                    {data1.normalizedDegree}
-                </dd>
-                <dt class="col-sm-2">
-                    Branch
-                </dt>
-                <dd class="col-sm-10">
-                    {data1.normalizedBranch}
-                </dd>
-            </dl>
-        </div>
-        <div>
-            <Link className='btn btn-warning' to={'/students-edit-view?id=' + data1.email}>Edit</Link> |&nbsp;
-            <Link className='btn btn-primary' to={'/students-index-view'}>Back to List</Link>
-        </div>
+    if (data1) {
+        row.push(<React.Fragment>
+            <div>
+                <h4>Student Details</h4>
+                <hr />
+                <dl className="row">
+                    <dt className="col-sm-2">
+                        Name
+                    </dt>
+                    <dd className="col-sm-10">
+                        {data1.name}
+                    </dd>
+                    <dt className="col-sm-2">
+                        Email
+                    </dt>
+                    <dd className="col-sm-10">
+                        {data1.email}
+                    </dd>
+                    <dt className="col-sm-2">
+                        Batch
+                    </dt>
+                    <dd className="col-sm-10">
+                        {data1.batch}
+                    </dd>
+                    <dt className="col-sm-2">
+                        Section
+                    </dt>
+                    <dd className="col-sm-10">
+                        {data1.section}
+                    </dd>
+                    <dt className="col-sm-2">
+                        Roll Number
+                    </dt>
+                    <dd className="col-sm-10">
+                        {data1.rollNumber}
+                    </dd>
+                    <dt className="col-sm-2">
+                        Degree
+                    </dt>
+                    <dd className="col-sm-10">
+                        {data1.normalizedDegree}
+                    </dd>
+                    <dt className="col-sm-2">
+                        Branch
+                    </dt>
+                    <dd className="col-sm-10">
+                        {data1.normalizedBranch}
+                    </dd>
+                </dl>
+            </div>
+            <div>
+                <Link className='btn btn-warning' to={'/students-edit-view?id=' + data1.email}>Edit</Link> |&nbsp;
+                <Link className='btn btn-primary' to={'/students-index-view'}>Back to List</Link>
+            </div>
 
-    </React.Fragment>
-    )
+        </React.Fragment>
+        )
     }
     return (
         <React.Fragment>
             <h1>Details</h1>
-            {spinner?<LoadingAnimation type='fallinglines' text="Loading..."/>:row}
+            {spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> : row}
         </React.Fragment>
     )
 }
