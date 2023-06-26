@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Router, Routes } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 import { Layout } from './components/Layout';
 import './custom.css';
 import { QueryClient,QueryClientProvider } from 'react-query';
+
 const queryClient=new QueryClient();
 
 export default class App extends Component {
@@ -12,6 +13,7 @@ export default class App extends Component {
 
   render() {
     return (<QueryClientProvider client={queryClient}>
+
       <Layout>
         <Routes>
         
@@ -20,7 +22,8 @@ export default class App extends Component {
             return <Route key={index} {...rest} element={requireAuth ? <AuthorizeRoute {...rest} element={element} /> : element} />;
           })}
         </Routes>
-      </Layout></QueryClientProvider>
+      </Layout>
+      </QueryClientProvider>
     );
   }
 }
