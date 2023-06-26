@@ -5,10 +5,13 @@ import authService from '../../components/api-authorization/AuthorizeService';
 import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
+import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
+import "./StudentsViews.css"
 export function StudentsIndexView() {
     const navigate = useNavigate()
     const [data, setData] = useState(null)
     const [spinner, setSpinner] = useState(true);
+    const [progressBar, setProgressBar] = useState({ value: 0, status: false });
     useEffect(() => {
         authService.getAccessToken().then(token => {
             axios.get('students', {
@@ -16,77 +19,154 @@ export function StudentsIndexView() {
             }).then((response) => {
                 setData(response.data)
                 setSpinner(false)
+                setTimeout(()=>{setProgressBar({ value: 0, status: false })},1000)
+                
             })
         })
-    })
+    },[data])
+
+    function readCsvFile(eve) {
+        if (eve.target.files.length > 0) {
+            var uplodedFile = eve.target.files[0]
+            var reader = new FileReader();
+            reader.onloadend = function (e) {
+                var jsonData = [];
+                var headers = [];
+                var rows = e.target.result.split("\r\n");
+                for (var i = 0; i < rows.length; i++) {
+                    var cells = rows[i].split(",");
+                    var rowData = {};
+                    for (var j = 0; j < cells.length; j++) {
+                        if (i == 0) {
+                            var headerName = cells[j].trim();
+                            headers.push(headerName);
+                        } else {
+                            var key = headers[j];
+                            if (key) {
+                                rowData[key] = cells[j].trim();
+                            }
+                        }
+                    }
+                    if (i != 0) {
+                        jsonData.push(rowData);
+                    }
+                }
+                 jsonData = JSON.parse(JSON.stringify(jsonData));
+                authService.getAccessToken().then(token => {
+                    jsonData.map((studentRecord, index) => {
+
+                        axios.post('students', studentRecord,
+                            { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                        ).then((response) => {
+                            console.log(response)
+                            setProgressBar({ value: parseInt(((index + 1) / jsonData.length) * 100), status: true });
+                        }
+                        )
+                    })
+                }
+                )
+            }
+            reader.readAsText(uplodedFile);
+        }
+
+    }
     return (
         spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> :
-        <React.Fragment>
-            <h1>Students</h1>
-            <p style={{ textAlign: 'right' }}>
-                <Link className='btn btn-primary' to="/students-create-view">+ Create New</Link>&nbsp;
-            </p>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            Email
-                        </th>
-                        <th>
-                            RollNumber
-                        </th>
-                        <th>
-                            Batch
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        data.map((val) => {
-                            return (
-                                <tr key={val.email}>
-                                    <td>
-                                        {val.name}
-                                    </td>
-                                    <td>
-                                        {val.email}
-                                    </td>
-                                    <td>
-                                        {val.rollNumber}
-                                    </td>
-                                    <td>
-                                        {val.batch}
-                                    </td>
-                                    <td>
-                                        <Link className='btn btn-primary' to={"/students-edit-view?id=" + val.email} >Edit</Link> |&nbsp;
-                                        <Link className='btn btn-warning' to={"/students-details-view?id=" + val.email}>Details</Link> |&nbsp;
-                                        <button className='btn btn-danger'
-                                            onClick={() => {
-                                                if (window.confirm(`Are you sure you want to delete this student (` + val.email + ")?")) {
-                                                    authService.getAccessToken().then(token => {
-                                                        axios.delete(`students/${val.email}`, {
-                                                            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-                                                        }).then((response) => {
-                                                            console.log(response.data);
-                                                            navigate("/students-index-view");
-                                                        })
-                                                    })
-                                                }
-                                            }}
-                                        >Delete</button>
+            <React.Fragment>
+                <ProgressBar value={progressBar.value} status={progressBar.status} />
+                <h1>Students</h1>
+                <p style={{ textAlign: 'right' }}>
+                    <label htmlFor="UploadedFile">
+                        <a htmlFor="UploadedFile" className="btn btn-success">+ Add Via File(.csv)</a>
+                    </label>
+                    <input id="UploadedFile" name="UploadedFile" onChange={readCsvFile} type="file" accept="text/csv" hidden />&nbsp;
+                    <Link className='btn btn-primary' to="/students-create-view">+ Create New</Link>&nbsp;
+                    <button className='btn btn-danger' onClick={() => {
 
-                                    </td>
-                                </tr>
+                        if (window.confirm(`Are you sure you want to delete all students?`)) {
+                            data.map(
+                                (val, index) => {
+                                    authService.getAccessToken().then(token => {
+                                        axios.delete(`students/${val.email}`, {
+                                            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                                        }).then((response) => {
+                                            console.log(response.data);
+                                            setProgressBar({ value: parseInt(((index + 1) / data.length) * 100), status: true });
+                                        })
+                                    })
+                                }
 
                             )
-                        })}
-                </tbody>
-            </table>
-        </React.Fragment>
+                        }
+
+
+
+
+                    }
+                    }
+                    >Delete All</button>
+                </p>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                RollNumber
+                            </th>
+                            <th>
+                                Batch
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            data.map((val) => {
+                                return (
+                                    <tr key={val.email}>
+                                        <td>
+                                            {val.name}
+                                        </td>
+                                        <td>
+                                            {val.email}
+                                        </td>
+                                        <td>
+                                            {val.rollNumber}
+                                        </td>
+                                        <td>
+                                            {val.batch}
+                                        </td>
+                                        <td>
+                                            <Link className='btn btn-primary' to={"/students-edit-view?id=" + val.email} >Edit</Link> |&nbsp;
+                                            <Link className='btn btn-warning' to={"/students-details-view?id=" + val.email}>Details</Link> |&nbsp;
+                                            <button className='btn btn-danger'
+                                                onClick={() => {
+                                                    if (window.confirm(`Are you sure you want to delete this student (` + val.email + ")?")) {
+                                                        authService.getAccessToken().then(token => {
+                                                            axios.delete(`students/${val.email}`, {
+                                                                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                                                            }).then((response) => {
+                                                                console.log(response.data);
+                                                                navigate("/students-index-view");
+                                                            })
+                                                        })
+                                                    }
+                                                }}
+                                            >Delete</button>
+
+                                        </td>
+                                    </tr>
+
+                                )
+                            })}
+                    </tbody>
+                </table>
+            </React.Fragment>
     )
 }
 export function StudentsCreateView() {
@@ -377,14 +457,7 @@ export function StudentsDetailsView() {
     const [spinner, setSpinner] = useState(true);
     const [data1, setData] = useState(null)
     const queryParameters = new URLSearchParams(location.search)
-    async function populateStudent() {
-        const token = await authService.getAccessToken();
-        var response = await axios.get(`students/${queryParameters.get('id')}`, {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        })
-        return await response.data
 
-    }
     useEffect(() => {
         authService.getAccessToken().then(token => {
 

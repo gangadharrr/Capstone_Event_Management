@@ -14,6 +14,10 @@ const AppRoutes = [
     path: '/counter',
     element: <Counter />
   },
+  {
+    path: '/fetch-data',
+    element: <FetchData />
+  },
   ...StudentsViewsRoutes,
   ...ApiAuthorzationRoutes
 ];
