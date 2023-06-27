@@ -7,8 +7,8 @@ namespace Capstone_Event_Management.Models
     [Index(nameof(ProfessorId), IsUnique = true)]
     public class Professors
     {
-        [Display(Name = "Employee ID")]
-        [Required(ErrorMessage = "Employee ID is Required")]
+        [Display(Name = "Professor ID")]
+        [Required(ErrorMessage = "Professor ID is Required")]
         public string ProfessorId { get; set; }
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is Required")]

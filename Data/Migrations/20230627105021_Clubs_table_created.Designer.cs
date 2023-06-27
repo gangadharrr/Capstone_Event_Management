@@ -4,6 +4,7 @@ using Capstone_Event_Management.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Capstone_Event_Management.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230627105021_Clubs_table_created")]
+    partial class Clubs_table_created
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,7 +124,7 @@ namespace Capstone_Event_Management.Data.Migrations
 
                     b.Property<string>("President")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Price")
                         .IsRequired()
@@ -129,16 +132,12 @@ namespace Capstone_Event_Management.Data.Migrations
 
                     b.Property<string>("ProfessorIncharge")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ClubId");
 
                     b.HasIndex("ClubEmail")
                         .IsUnique();
-
-                    b.HasIndex("President");
-
-                    b.HasIndex("ProfessorIncharge");
 
                     b.ToTable("Clubs");
                 });
@@ -488,25 +487,6 @@ namespace Capstone_Event_Management.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Capstone_Event_Management.Models.Clubs", b =>
-                {
-                    b.HasOne("Capstone_Event_Management.Models.Students", "Students")
-                        .WithMany()
-                        .HasForeignKey("President")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Capstone_Event_Management.Models.Professors", "Professors")
-                        .WithMany()
-                        .HasForeignKey("ProfessorIncharge")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Professors");
-
-                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

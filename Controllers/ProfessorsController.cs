@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Capstone_Event_Management.Data;
 using Capstone_Event_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Capstone_Event_Management.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class ProfessorsController : ControllerBase
