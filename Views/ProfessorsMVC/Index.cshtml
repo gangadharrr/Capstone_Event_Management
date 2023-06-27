@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Capstone_Event_Management.Models.Professors>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfessorId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Designation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NormalizedDegree)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NormalizedBranch)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProfessorId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Designation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedDegree)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedBranch)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Email">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Email">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Email">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

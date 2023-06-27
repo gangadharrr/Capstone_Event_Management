@@ -3,6 +3,7 @@ import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import {StudentsViewsRoutes} from '../src/Views/StudentsViews/StudentsViewsRoutes';
+import {ProfessorsViewsRoutes} from '../src/Views/ProfessorsViews/ProfessorsViewsRoutes';
 
 
 const AppRoutes = [
@@ -18,6 +19,7 @@ const AppRoutes = [
     path: '/fetch-data',
     element: <FetchData />
   },
+  ...ProfessorsViewsRoutes,
   ...StudentsViewsRoutes,
   ...ApiAuthorzationRoutes
 ];

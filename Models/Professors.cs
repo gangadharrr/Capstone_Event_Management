@@ -9,14 +9,14 @@ namespace Capstone_Event_Management.Models
     {
         [Display(Name = "Employee ID")]
         [Required(ErrorMessage = "Employee ID is Required")]
-        public string? ProfessorId { get; set; }
+        public string ProfessorId { get; set; }
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is Required")]
         public string? Name { get; set; }
         [Key]
         [Display(Name = "Email")]
         [Required(ErrorMessage = "Email is Required")]
-        public string? Email { get; set; }
+        public string Email { get; set; }
         [Display(Name = "Designation")]
         [Required(ErrorMessage = "Designation is Required")]
         public string? Designation { get; set; }
