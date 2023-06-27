@@ -11,7 +11,6 @@ using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using static System.Net.WebRequestMethods;
 

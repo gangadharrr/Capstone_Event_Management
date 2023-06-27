@@ -19,11 +19,11 @@ export function StudentsIndexView() {
             }).then((response) => {
                 setData(response.data)
                 setSpinner(false)
-                setTimeout(()=>{setProgressBar({ value: 0, status: false })},1000)
-                
+                setTimeout(() => { setProgressBar({ value: 0, status: false }) }, 1000)
+
             })
         })
-    },[data])
+    }, [data])
 
     function readCsvFile(eve) {
         if (eve.target.files.length > 0) {
@@ -51,20 +51,26 @@ export function StudentsIndexView() {
                         jsonData.push(rowData);
                     }
                 }
-                 jsonData = JSON.parse(JSON.stringify(jsonData));
-                authService.getAccessToken().then(token => {
-                    jsonData.map((studentRecord, index) => {
-
-                        axios.post('students', studentRecord,
-                            { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                        ).then((response) => {
-                            console.log(response)
-                            setProgressBar({ value: parseInt(((index + 1) / jsonData.length) * 100), status: true });
-                        }
-                        )
-                    })
+                jsonData = JSON.parse(JSON.stringify(jsonData));
+                if(headers.toString()===['name', 'email', 'batch', 'section', 'rollNumber', 'normalizedDegree', 'normalizedBranch'].toString()){
+                    authService.getAccessToken().then(token => {
+                        jsonData.map((studentRecord, index) => {
+                            axios.post('students', studentRecord,
+                                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                            ).then((response) => {
+                                setProgressBar({ value: parseInt(((index + 1) / jsonData.length) * 100), status: true });
+                            }
+                            ).catch((error) => {
+                                console.log(error)
+                            })
+                        })
+                    }
+                    )
                 }
-                )
+                else{
+                    alert('Invalid Csv File Imported')
+                }
+                
             }
             reader.readAsText(uplodedFile);
         }
@@ -90,20 +96,17 @@ export function StudentsIndexView() {
                                         axios.delete(`students/${val.email}`, {
                                             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
                                         }).then((response) => {
-                                            console.log(response.data);
                                             setProgressBar({ value: parseInt(((index + 1) / data.length) * 100), status: true });
+                                        }).catch((error) => {
+                                            console.log(error)
                                         })
                                     })
                                 }
 
                             )
                         }
-
-
-
-
                     }
-                    }
+                }
                     >Delete All</button>
                 </p>
                 <table className="table">
@@ -151,8 +154,9 @@ export function StudentsIndexView() {
                                                             axios.delete(`students/${val.email}`, {
                                                                 headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
                                                             }).then((response) => {
-                                                                console.log(response.data);
                                                                 navigate("/students-index-view");
+                                                            }).catch((error) => {
+                                                                console.log(error)
                                                             })
                                                         })
                                                     }
@@ -217,7 +221,6 @@ export function StudentsCreateView() {
             _data['err_' + event.target.id] = ''
             setData([_data])
         }
-        console.log(data)
     }
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_email === '' && data[0].err_batch === '' && data[0].err_section === '' && data[0].err_rollNumber === '' && data[0].err_normalizedDegree === '' && data[0].err_normalizedBranch === '') {
@@ -233,10 +236,11 @@ export function StudentsCreateView() {
                 },
                     { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
                 ).then((response) => {
-                    console.log(response)
                     navigate('/students-index-view')
                 }
-                )
+                ).catch((error) => {
+                    console.log(error)
+                })
             }
             )
         }
@@ -254,7 +258,7 @@ export function StudentsCreateView() {
 
                         <h4>Students</h4>
                         <hr />
-                        <div className="row">
+                        <div className="row" key={data.email}>
                             <div className="col-md-4">
                                 <div className="form-group">
                                     <input className="form-control" id='name' placeholder="Name" value={data.name} onChange={onChangeHandle} required />
@@ -269,8 +273,8 @@ export function StudentsCreateView() {
                                     <span htmlFor='rollNumber' className="text-danger">{data.err_rollNumber}</span>
                                 </div><br />
                                 <div className="form-group">
-                                    <select name="section" id="section" onChange={onChangeHandle} className="form-control" required>
-                                        <option value="" selected disabled hidden>Select Section</option>
+                                    <select name="section" id="section" onChange={onChangeHandle}  className="form-control" required>
+                                        <option hidden>Select Section</option>
                                         {sections}
                                     </select>
                                 </div><br />
@@ -353,7 +357,6 @@ export function StudentsEditView() {
             _data['err_' + event.target.id] = ''
             setData([_data])
         }
-        console.log(data)
     }
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_email === '' && data[0].err_batch === '' && data[0].err_section === '' && data[0].err_rollNumber === '' && data[0].err_normalizedDegree === '' && data[0].err_normalizedBranch === '') {
@@ -404,7 +407,7 @@ export function StudentsEditView() {
 
     return (
         <React.Fragment>
-            {data.map((data, index) => {
+            {data.map((data) => {
                 return (spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> :
 
                     <React.Fragment>
@@ -412,7 +415,7 @@ export function StudentsEditView() {
 
                         <h4>Students</h4>
                         <hr />
-                        <div className="row">
+                        <div className="row" key={data.email}>
                             <div className="col-md-4">
                                 <div className="form-group">
                                     <input className="form-control" id='name' placeholder="Name" value={data.name} onChange={onChangeHandle} required />
