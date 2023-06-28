@@ -5,6 +5,7 @@ import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
 import Select from "react-select";
+import "./ClubsViews.css"
 
 
 export function ClubsIndexView() {
@@ -306,7 +307,7 @@ export function ClubsCreateView() {
                                         <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="50px" width="50px" />
                                     </label>
                                     <input id="image-input" type="file" accept="image/*" onChange={readImageFile} height="10px" width="10px" hidden />
-                                    <img src={data.clubPicture} />
+                                    <img className='image-display' src={data.clubPicture} />
                                 </div>
                                 <br />
                                 
@@ -551,7 +552,7 @@ export function ClubsEditView() {
                                         </label>
 
                                         <input id="image-input" type="file" accept="image/*" onChange={readImageFile} height="10px" width="10px" hidden />
-                                        <img src={data.clubPicture} />
+                                        <img className='image-display' src={data.clubPicture} />
                                     </div><br />
                                     <div className="form-group">
                                         <button className="btn btn-success" onClick={submitForm}>Save</button>&nbsp;&nbsp;
@@ -584,7 +585,6 @@ export function ClubsDetailsView() {
         })
     }, [])
     return (
-
         <React.Fragment>
             <h1>Details</h1>
             {spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> : <React.Fragment>
@@ -596,7 +596,7 @@ export function ClubsDetailsView() {
                             Club Picture
                         </dt>
                         <dd className="col-sm-9">
-                            <img src={data.clubPicture} alt="" />
+                            <img className='image-display' src={data.clubPicture} alt="" />
                         </dd>
                         <dt className="col-sm-3">
                             ClubId

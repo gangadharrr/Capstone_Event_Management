@@ -1,31 +1,47 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect,useRef } from 'react';
 import { LoadingAnimation } from './LoadingAnimation/LoadingAnimation';
 import { CardDisplay } from './CardDisplay/CardDisplay';
+import axios from 'axios';
+import authService from './api-authorization/AuthorizeService';
+import "./Home.css"
 
 
 export function Home() {
+  const [data, setData] = useState(null);
+  const [spinner, setSpinner] = useState(true);
+  const ref = useRef();
+  useEffect(() => {
+    authService.getAccessToken().then(token => {
+      axios.get('clubs', {
+        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+      }).then((response) => {
+        setData(response.data)
+        setSpinner(false)
+      })
+    })
+  })
+  const scroll = (scrollOffset) => {
+    ref.current.scrollLeft += scrollOffset;
+  };
   return (
     <div><h1>Hello, world!</h1>
       <h4>Clubs</h4>
       <hr />
-      <div class="rowDisplay">
-        <div class="col-sm-3  ">
-          <CardDisplay imgsrc="https://community.mozilla.org/wp-content/uploads/2020/08/Mozilla-community-logo-01-01.jpg" title="Morzilla Club" description="Some quick example text to build on the card title and make up the bulk of the card's content."/>
-        </div>
-        <div class="col-sm-3  ">
-          <CardDisplay imgsrc="https://community.mozilla.org/wp-content/uploads/2020/08/Mozilla-community-logo-01-01.jpg" title="Card title" description="Some quick example text to build on the card title and make up the bulk of the card's content."/>
-        </div>
-        <div class="col-sm-3 ">
-          <CardDisplay imgsrc="https://community.mozilla.org/wp-content/uploads/2020/08/Mozilla-community-logo-01-01.jpg" title="Card title" description="Some quick example text to build on the card title and make up the bulk of the card's content."/>
-        </div>
-        <div class="col-sm-3 ">
-          <CardDisplay imgsrc="https://community.mozilla.org/wp-content/uploads/2020/08/Mozilla-community-logo-01-01.jpg" title="Card title" description="Some quick example text to build on the card title and make up the bulk of the card's content."/>
-        </div>
-        <div class="col-sm-3 ">
-          <CardDisplay imgsrc="https://community.mozilla.org/wp-content/uploads/2020/08/Mozilla-community-logo-01-01.jpg" title="Card title" description="Some quick example text to build on the card title and make up the bulk of the card's content."/>
-        </div>
+      <div className='scroll-content'>
+        <button className='nav-buttons' onClick={() => scroll(-200)}>&#5176;</button>
+      <div className="rowDisplay" ref={ref}>
+        { spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> : data.map((item) => {
+          return (
+            <div className="col-sm-3" key={item.clubId}>
+              <CardDisplay  imgsrc={item.clubPicture} title={item.name} description={item.description} />
+            </div>
+          )
+        })}
       </div>
+        <button className='nav-buttons'  onClick={() => scroll(200)}>&#5171;</button>
+        </div>
     </div>
+      
 
   )
 }

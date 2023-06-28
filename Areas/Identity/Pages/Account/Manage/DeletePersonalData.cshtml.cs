@@ -95,8 +95,6 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
             var ApiDeleteResponse=cloudinary.DeleteResources($"Images/{user.UserName}");
-            //var ApiDeleteResponse=ClientDeleteRequest("v1_1/dujyzevpx/resources/image/upload/Images/tagbotroadster@gmail.com");
-            Console.WriteLine(ApiDeleteResponse.ToString());
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user.");
@@ -107,14 +105,6 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 
             return Redirect("~/");
-        }
-        private static HttpResponseMessage ClientDeleteRequest(string RequestURI)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.cloudinary.com/");
-            client.DefaultRequestHeaders.Accept.Clear();
-            HttpResponseMessage response = client.DeleteAsync(RequestURI).Result;
-            return response;
         }
     }
 }
