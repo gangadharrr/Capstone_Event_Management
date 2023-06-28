@@ -112,13 +112,16 @@ export function StudentsIndexView() {
                     <thead>
                         <tr>
                             <th>
+                                RollNumber
+                            </th>
+                            <th>
                                 Name
                             </th>
                             <th>
-                                Email
+                                Degree
                             </th>
                             <th>
-                                RollNumber
+                                Branch
                             </th>
                             <th>
                                 Batch
@@ -132,13 +135,16 @@ export function StudentsIndexView() {
                                 return (
                                     <tr key={val.email}>
                                         <td>
+                                            {val.rollNumber}
+                                        </td>
+                                        <td>
                                             {val.name}
                                         </td>
                                         <td>
-                                            {val.email}
+                                            {val.normalizedDegree}
                                         </td>
                                         <td>
-                                            {val.rollNumber}
+                                            {val.normalizedBranch}
                                         </td>
                                         <td>
                                             {val.batch}

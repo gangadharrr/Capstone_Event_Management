@@ -8,6 +8,7 @@ const context = [
   "/weatherforecast",
   "/students",
   "/professors",
+  "/clubs",
   "/_configuration",
   "/.well-known",
   "/Identity",

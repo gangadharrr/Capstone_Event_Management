@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Capstone_Event_Management.Data;
 using Capstone_Event_Management.Models;
 using Microsoft.AspNetCore.Authorization;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Collections;
+using Humanizer;
 
 namespace Capstone_Event_Management.Controllers
 {
@@ -17,10 +23,12 @@ namespace Capstone_Event_Management.Controllers
     public class ClubsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
+        public Cloudinary cloudinary;
         public ClubsController(ApplicationDbContext context)
         {
             _context = context;
+            Environment.SetEnvironmentVariable("CLOUDINARY_URL", "cloudinary://526475314935564:3sqymKRV7iuoERChxKjEEHc7O0A@dujyzevpx");
+            cloudinary = new Cloudinary();
         }
 
         // GET: api/Clubs
@@ -31,6 +39,7 @@ namespace Capstone_Event_Management.Controllers
           {
               return NotFound();
           }
+           
             return await _context.Clubs.ToListAsync();
         }
 
@@ -61,7 +70,39 @@ namespace Capstone_Event_Management.Controllers
             {
                 return BadRequest();
             }
+            clubs.Students = await _context.Students.FindAsync(clubs.President);
+            clubs.Professors = await _context.Professors.FindAsync(clubs.ProfessorIncharge);
+            if (clubs.Students == null || clubs.Professors == null)
+            {
+                return Problem("Entity set 'Email of student or Professor'  is null.");
 
+            }
+            var dataUrl = clubs.ClubPicture;
+            var matchGroups = Regex.Match(dataUrl, @"^data:((?<type>[\w\/]+))?;base64,(?<data>.+)$").Groups;
+            var base64Data = matchGroups["data"].Value;
+            if (base64Data!="")
+            {
+                var binData = Convert.FromBase64String(base64Data);
+                Stream stream = new MemoryStream(binData);
+                var uploadParams = new ImageUploadParams()
+                {
+                    File = new FileDescription($"Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture", stream),
+                    PublicId = $"Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture",
+                    Folder = "Images"
+
+                };
+                var uploadResult = cloudinary.Upload(uploadParams);
+                var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture");
+                Console.WriteLine($"Images/Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture" + GetResponse.Url + GetResponse.StatusCode.ToString());
+                if (GetResponse.StatusCode.ToString() == "OK")
+                {
+                    clubs.ClubPicture = GetResponse.Url;
+                }
+                else
+                {
+                    throw new Exception("Error in Data Fetching");
+                }
+            }
             _context.Entry(clubs).State = EntityState.Modified;
 
             try
@@ -88,10 +129,40 @@ namespace Capstone_Event_Management.Controllers
         [HttpPost]
         public async Task<ActionResult<Clubs>> PostClubs(Clubs clubs)
         {
-          if (_context.Clubs == null)
+          if (_context.Clubs == null || _context.Students==null || _context.Professors==null)
           {
               return Problem("Entity set 'ApplicationDbContext.Clubs'  is null.");
           }
+            clubs.Students = await _context.Students.FindAsync(clubs.President);
+            clubs.Professors = await _context.Professors.FindAsync(clubs.ProfessorIncharge);
+            if(clubs.Students ==null || clubs.Professors == null)
+            {
+                return Problem("Entity set 'Email of student or Professor'  is null.");
+
+            }
+            var dataUrl = clubs.ClubPicture;
+            var matchGroups = Regex.Match(dataUrl, @"^data:((?<type>[\w\/]+))?;base64,(?<data>.+)$").Groups;
+            var base64Data = matchGroups["data"].Value;
+            var binData = Convert.FromBase64String(base64Data);
+            Stream stream = new MemoryStream(binData);
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription($"Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture", stream),
+                PublicId = $"Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture",
+                Folder = "Images"
+
+            };
+            var uploadResult = cloudinary.Upload(uploadParams);
+            var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture");
+            Console.WriteLine($"Images/Club_{clubs.ClubEmail}_{clubs.Name}_DisplayPicture" + GetResponse.Url + GetResponse.StatusCode.ToString());
+            if (GetResponse.StatusCode.ToString() == "OK")
+            {
+                clubs.ClubPicture = GetResponse.Url;
+            }
+            else
+            {
+                throw new Exception("Error in Data Fetching");
+            }
             _context.Clubs.Add(clubs);
             await _context.SaveChangesAsync();
 

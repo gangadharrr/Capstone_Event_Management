@@ -387,7 +387,7 @@ export function ProfessorsEditView() {
 
                         <h4>Professors</h4>
                         <hr />
-                        <div className="row">
+                        <div className="row" key={data.email}>
                             <div className="col-md-4">
                                 <div className="form-group">
                                     <input id="professorId" placeholder="ProfessorId" className="form-control" onChange={onChangeHandle} value={data.professorId} required />

@@ -4,6 +4,8 @@ import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import {StudentsViewsRoutes} from '../src/Views/StudentsViews/StudentsViewsRoutes';
 import {ProfessorsViewsRoutes} from '../src/Views/ProfessorsViews/ProfessorsViewsRoutes';
+import {ClubsViewsRoutes} from '../src/Views/ClubsViews/ClubsViewsRoutes';
+
 
 
 const AppRoutes = [
@@ -19,6 +21,7 @@ const AppRoutes = [
     path: '/fetch-data',
     element: <FetchData />
   },
+  ...ClubsViewsRoutes,
   ...ProfessorsViewsRoutes,
   ...StudentsViewsRoutes,
   ...ApiAuthorzationRoutes

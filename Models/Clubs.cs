@@ -36,6 +36,9 @@ namespace Capstone_Event_Management.Models
         [Display(Name = "Available Seats")]
         [Required(ErrorMessage = "Available Seats is Required")]
         public int? AvailableSeats { get; set; } = int.MaxValue;
+        [Display(Name = "ClubPicture")]
+        [Required(ErrorMessage = "ClubPictureis Required")]
+        public string? ClubPicture { get; set; } = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345454/Images/HomePageBG_glzmob.jpg";
 
         public virtual Students Students { get; set; }
         public virtual Professors Professors { get; set; }
