@@ -5,6 +5,7 @@ import { Home } from "./components/Home";
 import {StudentsViewsRoutes} from '../src/Views/StudentsViews/StudentsViewsRoutes';
 import {ProfessorsViewsRoutes} from '../src/Views/ProfessorsViews/ProfessorsViewsRoutes';
 import {ClubsViewsRoutes} from '../src/Views/ClubsViews/ClubsViewsRoutes';
+import {ClubsIndexPage} from './Pages/Clubs/ClubsIndexPage'
 
 
 
@@ -20,6 +21,10 @@ const AppRoutes = [
   {
     path: '/fetch-data',
     element: <FetchData />
+  },
+  {
+    path: '/club-home',
+    element: <ClubsIndexPage />
   },
   ...ClubsViewsRoutes,
   ...ProfessorsViewsRoutes,

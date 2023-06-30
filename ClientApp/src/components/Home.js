@@ -33,7 +33,7 @@ export function Home() {
         { spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> : data.map((item) => {
           return (
             <div className="col-sm-3" key={item.clubId}>
-              <CardDisplay  imgsrc={item.clubPicture} title={item.name} description={item.description} />
+              <CardDisplay  imgsrc={item.clubPicture} title={item.name} description={item.description} btnsrc={`/club-home?id=${item.clubId}`} />
             </div>
           )
         })}

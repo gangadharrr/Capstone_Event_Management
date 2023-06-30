@@ -218,7 +218,7 @@ export function ProfessorsCreateView() {
                 axios.post('professors', {
                     professorId: data[0].professorId,
                     name: data[0].name,
-                    email: data[0].email,
+                    email: data[0].email.toLowerCase(),
                     designation: data[0].designation,
                     normalizedDegree: data[0].normalizedDegree,
                     normalizedBranch: data[0].normalizedBranch,
@@ -340,7 +340,7 @@ export function ProfessorsEditView() {
                 axios.put(`professors/${queryParameters.get('id')}` , {
                     professorId: data[0].professorId,
                     name: data[0].name,
-                    email: data[0].email,
+                    email: data[0].email.toLowerCase(),
                     designation: data[0].designation,
                     normalizedDegree: data[0].normalizedDegree,
                     normalizedBranch: data[0].normalizedBranch,

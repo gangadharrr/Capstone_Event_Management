@@ -9,7 +9,7 @@ export function CardDisplay(props) {
       <div className="card-body">
         <h5 className="card-title">{props.title}</h5>
         <p className="card-text">{props.description}</p>
-        <Link to="#" className="btn btn-primary card-button ">Know More</Link>
+        <Link to={props.btnsrc} className="btn btn-primary card-button ">Know More</Link>
       </div>
   </div>
 

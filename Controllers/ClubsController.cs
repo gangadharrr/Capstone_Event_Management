@@ -86,14 +86,35 @@ namespace Capstone_Event_Management.Controllers
                 Stream stream = new MemoryStream(binData);
                 var uploadParams = new ImageUploadParams()
                 {
-                    File = new FileDescription($"Club_{id}_DisplayPicture", stream),
-                    PublicId = $"Club_{id}_DisplayPicture",
+                    File = new FileDescription($"Club_{clubs.ClubEmail}_DisplayPicture", stream),
+                    PublicId = $"Club_{clubs.ClubEmail}_DisplayPicture",
                     Folder = "Images"
 
                 };
                 var uploadResult = cloudinary.Upload(uploadParams);
-                var GetResponse = cloudinary.GetResource($"Images/Club_{id}_DisplayPicture");
-                Console.WriteLine($"Images/Club_{id}_DisplayPicture" + GetResponse.Url + GetResponse.StatusCode.ToString());
+                var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
+                Console.WriteLine($"Images/Club_{clubs.ClubEmail}_DisplayPicture" + GetResponse.Url + GetResponse.StatusCode.ToString());
+                if (GetResponse.StatusCode.ToString() == "OK")
+                {
+                    clubs.ClubPicture = GetResponse.Url;
+                }
+                else
+                {
+                    throw new Exception("Error in Data Fetching");
+                }
+            }
+            else
+            {
+                var uploadParams = new ImageUploadParams()
+                {
+                    File = new FileDescription(clubs.ClubPicture),
+                    PublicId = $"Club_{clubs.ClubEmail}_DisplayPicture",
+                    Folder = "Images"
+
+                };
+                var uploadResult = cloudinary.Upload(uploadParams);
+                var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
+                Console.WriteLine($"Images/Club_{clubs.ClubEmail}_DisplayPicture" + GetResponse.Url + GetResponse.StatusCode.ToString());
                 if (GetResponse.StatusCode.ToString() == "OK")
                 {
                     clubs.ClubPicture = GetResponse.Url;
@@ -140,7 +161,6 @@ namespace Capstone_Event_Management.Controllers
                 return Problem("Entity set 'Email of student or Professor'  is null.");
 
             }
-            Clubs _club= _context.Clubs.ToList().LastOrDefault();
             var dataUrl = clubs.ClubPicture;
             var matchGroups = Regex.Match(dataUrl, @"^data:((?<type>[\w\/]+))?;base64,(?<data>.+)$").Groups;
             var base64Data = matchGroups["data"].Value;
@@ -148,13 +168,13 @@ namespace Capstone_Event_Management.Controllers
             Stream stream = new MemoryStream(binData);
             var uploadParams = new ImageUploadParams()
             {
-                File = new FileDescription($"Club_{_club.ClubId+1}_DisplayPicture", stream),
-                PublicId = $"Club_{_club.ClubId + 1}_DisplayPicture",
+                File = new FileDescription($"Club_{clubs.ClubEmail}_DisplayPicture", stream),
+                PublicId = $"Club_{clubs.ClubEmail}_DisplayPicture",
                 Folder = "Images"
 
             };
             var uploadResult = cloudinary.Upload(uploadParams);
-            var GetResponse = cloudinary.GetResource($"Images/Club_{_club.ClubId + 1}_DisplayPicture");
+            var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
             if (GetResponse.StatusCode.ToString() == "OK")
             {
                 clubs.ClubPicture = GetResponse.Url;
@@ -182,7 +202,7 @@ namespace Capstone_Event_Management.Controllers
             {
                 return NotFound();
             }
-            var ApiDeleteResponse = cloudinary.DeleteResources($"Images/Club_{id}_DisplayPicture");
+            var ApiDeleteResponse = cloudinary.DeleteResources($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
             _context.Clubs.Remove(clubs);
             await _context.SaveChangesAsync();
 

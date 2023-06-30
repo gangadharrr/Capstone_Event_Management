@@ -232,7 +232,7 @@ export function StudentsCreateView() {
             authService.getAccessToken().then(token => {
                 axios.post('students', {
                     name: data[0].name,
-                    email: data[0].email,
+                    email: data[0].email.toLowerCase(),
                     batch: data[0].batch,
                     section: data[0].section,
                     rollNumber: parseInt(data[0].rollNumber),
@@ -368,7 +368,7 @@ export function StudentsEditView() {
             authService.getAccessToken().then(token => {
                 axios.put(`students/${queryParameters.get('id')}`, {
                     name: data[0].name,
-                    email: data[0].email,
+                    email: data[0].email.toLowerCase(),
                     batch: data[0].batch,
                     section: data[0].section,
                     rollNumber: parseInt(data[0].rollNumber),
