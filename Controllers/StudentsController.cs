@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace Capstone_Event_Management.Controllers
 {
-    [Authorize]
+   
     [Route("[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase
@@ -57,6 +57,7 @@ namespace Capstone_Event_Management.Controllers
 
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudents(string id, Students students)
         {
@@ -88,6 +89,7 @@ namespace Capstone_Event_Management.Controllers
 
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Students>> PostStudents(Students students)
         {
@@ -116,6 +118,7 @@ namespace Capstone_Event_Management.Controllers
         }
 
         // DELETE: api/Students/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudents(string id)
         {

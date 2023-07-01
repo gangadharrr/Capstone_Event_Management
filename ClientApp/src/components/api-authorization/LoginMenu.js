@@ -55,11 +55,11 @@ export class LoginMenu extends Component {
 
 
     return (<Fragment>
-     <Dropdown isOpen={this.state.dropdownOpen} toggle={()=>{this.toggle()}} direction="down" menuRole="listbox">
-        <DropdownToggle color='white'><AdvancedImage cldImg={myImg} style={{height:"39px",width:"39px",borderRadius:"50%"}} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav"  /> </DropdownToggle>
-        <DropdownMenu>  
-          <DropdownItem ><Link to={profilePath} style={{color:"black"}}>{userName}</Link></DropdownItem>
-          <DropdownItem > <NavLink replace tag={Link} className="text-dark" to={logoutPath} state={logoutState}>Logout</NavLink></DropdownItem>
+     <Dropdown isOpen={this.state.dropdownOpen} toggle={()=>{this.toggle()}} direction="down" menuRole="listbox" >
+        <DropdownToggle  color='dark'><AdvancedImage cldImg={myImg} style={{height:"39px",width:"39px",borderRadius:"50%"}} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav"  /> </DropdownToggle>
+        <DropdownMenu dark>  
+          <DropdownItem ><Link to={profilePath} style={{color:"white"}}>{userName}</Link></DropdownItem>
+          <DropdownItem > <NavLink replace tag={Link} className="text-light" to={logoutPath} state={logoutState}>Logout</NavLink></DropdownItem>
         </DropdownMenu>
         </Dropdown>
       {/* <NavItem>

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Capstone_Event_Management.Controllers
 {
-    [Authorize]
+    
     [Route("[controller]")]
     [ApiController]
     public class ProfessorsController : ControllerBase
@@ -54,6 +54,7 @@ namespace Capstone_Event_Management.Controllers
 
         // PUT: api/Professors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProfessors(string id, Professors professors)
         {
@@ -85,6 +86,7 @@ namespace Capstone_Event_Management.Controllers
 
         // POST: api/Professors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Professors>> PostProfessors(Professors professors)
         {
@@ -113,6 +115,7 @@ namespace Capstone_Event_Management.Controllers
         }
 
         // DELETE: api/Professors/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProfessors(string id)
         {

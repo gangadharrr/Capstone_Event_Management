@@ -25,14 +25,12 @@ export function ClubsIndexView() {
         })
     }, [data])
     return (
-        spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> :
+        spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
             <React.Fragment>
                 <h1>Clubs</h1>
 
                 <p style={{ textAlign: 'right' }}>
-
                     <Link className='btn btn-primary' to="/clubs-create-view">+ Create New</Link>&nbsp;
-
                 </p>
                 <table className="table">
                     <thead>

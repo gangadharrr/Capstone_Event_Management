@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
 import "./ProfileCardDisplay.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBellSlash,faBell,faEnvelope } from '@fortawesome/free-solid-svg-icons'
@@ -10,12 +10,12 @@ import axios from 'axios'
 export function ProfileCardDisplay(props) {
     const cld = new Cloudinary({cloud:{cloudName: 'dujyzevpx'}});
     const myImg=cld.image(props.imgsrc)
-
+    const navigate = useNavigate()
     return (
-    <div className="card" id='profile-card' >
-    {
+    <div className="card" id='profile-card' onClick={()=>navigate(props.btnsrc)} >
+    
         <AdvancedImage cldImg={myImg} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-card-img-top"  />
-    }
+    
       <div className="card-body" id='profile-card-body'>
         <div  id='profile-card-title'>
         <h6 className="card-title">{props.title}</h6>

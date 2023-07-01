@@ -29,7 +29,7 @@ export function Home() {
     <div><h1>Hello, world!</h1>
       <h4>Clubs</h4>
       <hr />
-      <div className='scroll-content'>
+      <div className='scroll-content' >
         <button className='nav-buttons' onClick={() => scroll(-200)}>&#5176;</button>
       <div className="rowDisplay" ref={ref}>
         { spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> : data.map((item) => {

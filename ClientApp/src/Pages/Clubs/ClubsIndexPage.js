@@ -62,24 +62,33 @@ export function ClubsIndexPage() {
         console.log(error.response.data);
       })
     })
-  }, [])
+  },[])
   return (
     <React.Fragment>
       {
         data.map((val) => {
-          return (spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> :
+          return (spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
             <div className="club-index-page">
               <div className='club-index-page-img'>
-                <img src={val.clubPicture} className="club-img-top" alt="..." />
+                <img src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345454/Images/HomePageBG_glzmob.jpg" className="club-img-top" alt="..." />
               </div>
               <div className='club-index-page-body'>
                 <div className='club-index-page-head'>
+                  <div>
+                  <div className='club-index-page-head-img'>
+                    <img src={val.clubPicture} className="club-img-profile" alt="..." />
+                  </div>
+
                   <h1 className='club-index-page-title'>{val.name}</h1>
-                  <button className='btn btn-primary register-button'>Join {val.price == 0 ? "free" : `of ₹${val.price}`} </button>
-                  {notifications ? <button className='btn btn-success notification-button' onClick={() => setNotifications(!notifications)}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button> :
-                    <button className='btn btn-outline-success notification-button' onClick={() => setNotifications(!notifications)}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button>
+                  <p className='club-index-page-email'><FontAwesomeIcon icon={faEnvelope} /> {val.clubEmail}</p>
+                  </div>
+                  <div id="button-area">
+
+                  <button className='btn btn-primary' id='register-button'>Join {val.price == 0 ? "free" : `of ₹${val.price}`} </button>
+                  {notifications ? <button className='btn btn-success ' id='notification-button'onClick={() => setNotifications(!notifications)}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button> :
+                    <button className='btn btn-outline-success' id='notification-button' onClick={() => setNotifications(!notifications)}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button>
                   }
-                  <p className='club-index-page-email'><FontAwesomeIcon icon={faEnvelope} /> Morzilla@sist.com</p>
+                  </div>
                 </div>
                 <hr />
                 <div className='club-index-page-content'>
@@ -90,8 +99,8 @@ export function ClubsIndexPage() {
                 <div className='club-index-page-footer'>
                   <div className='club-index-page-footer-title'><h4>Club Guardians</h4></div>
                   <div className='club-index-page-footer-img'>
-                    <ProfileCardDisplay imgsrc={`Images/${val.professorIncharge}`} title={val.presidentName} role="president" email={val.president} btnsrc={`/`} />
-                    <ProfileCardDisplay imgsrc={`Images/${val.professorIncharge}`} title={val.professorInchargeName} role="president" email={val.professorIncharge} btnsrc={`/`} />
+                    <ProfileCardDisplay imgsrc={`Images/${val.professorIncharge}`} title={val.presidentName} role="president" email={val.president} btnsrc={`/members-index-page?id=${val.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
+                    <ProfileCardDisplay imgsrc={`Images/${val.professorIncharge}`} title={val.professorInchargeName} role="president" email={val.professorIncharge} btnsrc={`/members-index-page?id=${val.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
                   </div>
                 </div>
                 <hr />

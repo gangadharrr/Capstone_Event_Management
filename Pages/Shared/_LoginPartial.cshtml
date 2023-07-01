@@ -18,11 +18,11 @@
     {
         identityUser = await UserManager.GetUserAsync(User);
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" ><img id="profile-picture-nav" src=@identityUser.ProfileUrl> @identityUser?.DisplayName</a>
+            <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" ><img id="profile-picture-nav" src=@identityUser.ProfileUrl> @identityUser?.DisplayName</a>
         </li>
         <li class="nav-item" >
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
-                <button type="submit" class="nav-link btn btn-link text-dark" id="logout-button">Logout</button>
+                <button type="submit" class="nav-link btn btn-link text-light" id="logout-button">Logout</button>
             </form>
         </li>
     }

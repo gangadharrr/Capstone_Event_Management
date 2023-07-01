@@ -25,19 +25,19 @@ export class NavMenu extends Component {
   render() {
     return (
       <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
+        <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" container="fluid" color='dark' fixed='top' dark  >
           <NavbarBrand tag={Link} to="/">Capstone Event Management</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
             <ul className="navbar-nav flex-grow" id='nav-list'>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/students-index-view">Students</NavLink>
+                <NavLink tag={Link} className="text-light" to="/students-index-view">Students</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/professors-index-view">Professors</NavLink>
+                <NavLink tag={Link} className="text-light" to="/professors-index-view">Professors</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/clubs-index-view">Clubs</NavLink>
+                <NavLink tag={Link} className="text-light" to="/clubs-index-view">Clubs</NavLink>
               </NavItem>
               <LoginMenu>
               </LoginMenu>

@@ -76,7 +76,7 @@ export function StudentsIndexView() {
 
     }
     return (
-        spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> :
+        spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
             <React.Fragment>
                 <ProgressBar value={progressBar.value} status={progressBar.status} />
                 <h1>Students</h1>

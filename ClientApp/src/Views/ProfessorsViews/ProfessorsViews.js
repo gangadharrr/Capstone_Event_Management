@@ -76,7 +76,7 @@ export function ProfessorsIndexView() {
     }
 
     return (
-        spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> :
+        spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
             <React.Fragment>
                 <ProgressBar value={progressBar.value} status={progressBar.status} />
                 <h1>Professors</h1>
@@ -461,7 +461,7 @@ export function ProfessorsDetailsView() {
                     {data1.professorId}
                 </dd>
                 <dt className="col-sm-2">
-                    name
+                    Name
                 </dt>
                 <dd className="col-sm-10">
                     {data1.name}
