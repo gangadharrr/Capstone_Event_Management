@@ -22,7 +22,7 @@
         </li>
         <li class="nav-item" >
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                <button type="submit" class="nav-link btn btn-link text-dark" id="logout-button">Logout</button>
             </form>
         </li>
     }
@@ -47,6 +47,8 @@
         display:flex;
         flex-direction:row;
         align-items:center;
-        justify-content:space-between;
+    }
+    #logout-button{
+        padding: 0% 0% 9% 20%;
     }
 </style>

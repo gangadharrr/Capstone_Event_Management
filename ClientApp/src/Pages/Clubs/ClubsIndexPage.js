@@ -12,7 +12,6 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react"
 import { fill } from "@cloudinary/url-gen/actions/resize";
 export function ClubsIndexPage() {
-  const cld = new Cloudinary({cloud:{cloudName: 'dujyzevpx'}});
   const [notifications, setNotifications] = useState(false)
   const location = useLocation()
   const [spinner, setSpinner] = useState(true);
@@ -35,36 +34,6 @@ export function ClubsIndexPage() {
     err_price: null,
     err_availableSeats: null,
     err_clubPicture: null
-  }])
-  const [president, setPresident] = useState([{
-    name: null,
-    email: null,
-    batch: null,
-    section: null,
-    rollNumber: null,
-    normalizedDegree: null,
-    normalizedBranch: null,
-    err_name: '',
-    err_email: '',
-    err_batch: '',
-    err_section: '',
-    err_rollNumber: '',
-    err_normalizedDegree: '',
-    err_normalizedBranch: ''
-  }])
-  const [professorIncharge, setProfessorIncharge] = useState([{
-    professorId: null,
-    name: null,
-    email: null,
-    designation: null,
-    normalizedDegree: null,
-    normalizedBranch: null,
-    err_professorId: null,
-    err_name: null,
-    err_email: null,
-    err_designation: null,
-    err_normalizedDegree: null,
-    err_normalizedBranch: null
   }])
 
   useEffect(() => {

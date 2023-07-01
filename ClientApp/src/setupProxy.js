@@ -9,6 +9,7 @@ const context = [
   "/students",
   "/professors",
   "/clubs",
+  "/customidentityrole",
   "/_configuration",
   "/.well-known",
   "/Identity",

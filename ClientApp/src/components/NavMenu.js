@@ -29,7 +29,7 @@ export class NavMenu extends Component {
           <NavbarBrand tag={Link} to="/">Capstone Event Management</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-            <ul className="navbar-nav flex-grow">
+            <ul className="navbar-nav flex-grow" id='nav-list'>
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/students-index-view">Students</NavLink>
               </NavItem>

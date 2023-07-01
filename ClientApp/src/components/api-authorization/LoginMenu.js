@@ -1,8 +1,10 @@
-import React, { Component, Fragment } from 'react';
-import { NavItem, NavLink } from 'reactstrap';
+import React, { Component, Fragment,useState } from 'react';
+import { DropdownItem, DropdownMenu, NavItem, NavLink ,DropdownToggle,Dropdown} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import authService from './AuthorizeService';
 import { ApplicationPaths } from './ApiAuthorizationConstants';
+import { Cloudinary } from "@cloudinary/url-gen";
+import { AdvancedImage } from "@cloudinary/react"
 
 export class LoginMenu extends Component {
   constructor(props) {
@@ -10,7 +12,8 @@ export class LoginMenu extends Component {
 
     this.state = {
       isAuthenticated: false,
-      userName: null
+      userName: null,
+      dropdownOpen:false
     };
   }
 
@@ -45,14 +48,26 @@ export class LoginMenu extends Component {
     }
   }
 
+   toggle = () => {this.setState({dropdownOpen:!this.state.dropdownOpen})}
   authenticatedView(userName, profilePath, logoutPath, logoutState) {
+    const cld = new Cloudinary({cloud:{cloudName: 'dujyzevpx'}});
+    const myImg=cld.image(`Images/${userName}`);
+
+
     return (<Fragment>
-      <NavItem>
-        <NavLink tag={Link} className="text-dark" to={profilePath}>Hello {userName}</NavLink>
+     <Dropdown isOpen={this.state.dropdownOpen} toggle={()=>{this.toggle()}} direction="down" menuRole="listbox">
+        <DropdownToggle color='white'><AdvancedImage cldImg={myImg} style={{height:"39px",width:"39px",borderRadius:"50%"}} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav"  /> </DropdownToggle>
+        <DropdownMenu>  
+          <DropdownItem ><Link to={profilePath} style={{color:"black"}}>{userName}</Link></DropdownItem>
+          <DropdownItem > <NavLink replace tag={Link} className="text-dark" to={logoutPath} state={logoutState}>Logout</NavLink></DropdownItem>
+        </DropdownMenu>
+        </Dropdown>
+      {/* <NavItem>
+        <NavLink tag={Link} className="text-dark" to={profilePath} style={{display:"flex",flexDirection:"row"}}> <AdvancedImage cldImg={myImg} style={{height:"39px",width:"39px",borderRadius:"50%"}} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav"  /> {userName.split("@")[0]}</NavLink>
       </NavItem>
       <NavItem>
         <NavLink replace tag={Link} className="text-dark" to={logoutPath} state={logoutState}>Logout</NavLink>
-      </NavItem>
+      </NavItem> */}
     </Fragment>);
   }
 

@@ -12,12 +12,14 @@ export function Home() {
   const ref = useRef();
   useEffect(() => {
     authService.getAccessToken().then(token => {
-      axios.get('clubs', {
-        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-      }).then((response) => {
-        setData(response.data)
-        setSpinner(false)
-      })
+        
+        axios.get(`clubs`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((response) => {
+          setData(response.data)
+          setSpinner(false)
+        })
+      
     })
   })
   const scroll = (scrollOffset) => {

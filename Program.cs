@@ -1,5 +1,7 @@
 using Capstone_Event_Management.Data;
 using Capstone_Event_Management.Models;
+using Duende.IdentityServer.EntityFramework.Entities;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -27,7 +29,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.AddIdentityServer()
     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-
+builder.Services.AddAuthorization();
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
 

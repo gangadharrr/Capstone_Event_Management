@@ -130,7 +130,7 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
                     var uploadParams = new ImageUploadParams()
                     {
                         File = new FileDescription(this.Request.Form.Files[0].FileName, stream),
-                        PublicId= user.Email,
+                        PublicId= user.UserName,
                         Folder = "Images"
                     };
                     var uploadResult = cloudinary.Upload(uploadParams);
@@ -141,8 +141,8 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account.Manage
                     //{
                     //    this.Request.Form.Files[0].CopyTo(stream);
                     //}
-                    var GetResponse = cloudinary.GetResource($"Images/{user.Email}");
-                    Console.WriteLine($"Images/{user.Email}"+GetResponse.Url+GetResponse.StatusCode.ToString());
+                    var GetResponse = cloudinary.GetResource($"Images/{user.UserName}");
+                    Console.WriteLine($"Images/{user.UserName}"+GetResponse.Url+GetResponse.StatusCode.ToString());
                     if (GetResponse.StatusCode.ToString() == "OK")
                     {
                         profilePicture = GetResponse.Url;

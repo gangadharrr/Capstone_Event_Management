@@ -81,13 +81,16 @@ export function ClubsIndexView() {
                                             onClick={() => {
                                                 if (window.confirm(`Are you sure you want to delete this club (` + val.name + ")?")) {
                                                     authService.getAccessToken().then(token => {
-                                                        axios.delete(`clubs/${val.clubId}`, {
+                                                        authService.getUser().then(user => {
+
+                                                        axios.delete(`clubs/${user.name}/${val.clubId}`, {
                                                             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
                                                         }).then((response) => {
                                                             navigate("/clubs-index-view");
                                                         }).catch((error) => {
                                                             console.log(error)
                                                         })
+                                                     })
                                                     })
                                                 }
                                             }}
@@ -221,40 +224,42 @@ export function ClubsCreateView() {
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_clubEmail === '' && data[0].err_president === '' && data[0].err_professorIncharge === '' && data[0].err_description === '' && data[0].err_price === '' && data[0].err_availableSeats === '') {
             authService.getAccessToken().then(token => {
-                axios.post('clubs', {
-                    clubId: 0,
-                    name: data[0].name,
-                    description: data[0].description,
-                    president: data[0].president,
-                    professorIncharge: data[0].professorIncharge,
-                    clubEmail: data[0].clubEmail.toLowerCase(),
-                    price: parseFloat(data[0].price),
-                    availableSeats: parseInt(data[0].availableSeats),
-                    clubPicture: data[0].clubPicture,
-                    students: {
-                        name: "string",
-                        email: "string",
-                        batch: "string",
-                        section: "string",
-                        rollNumber: 0,
-                        normalizedDegree: "string",
-                        normalizedBranch: "string"
+                authService.getUser().then(user => {
+                    axios.post(`clubs/${user.name}`, {
+                        clubId: 0,
+                        name: data[0].name,
+                        description: data[0].description,
+                        president: data[0].president,
+                        professorIncharge: data[0].professorIncharge,
+                        clubEmail: data[0].clubEmail.toLowerCase(),
+                        price: parseFloat(data[0].price),
+                        availableSeats: parseInt(data[0].availableSeats),
+                        clubPicture: data[0].clubPicture,
+                        students: {
+                            name: "string",
+                            email: "string",
+                            batch: "string",
+                            section: "string",
+                            rollNumber: 0,
+                            normalizedDegree: "string",
+                            normalizedBranch: "string"
+                        },
+                        professors: {
+                            professorId: "string",
+                            name: "string",
+                            email: "string",
+                            designation: "string",
+                            normalizedDegree: "string",
+                            normalizedBranch: "string"
+                        }
                     },
-                    professors: {
-                        professorId: "string",
-                        name: "string",
-                        email: "string",
-                        designation: "string",
-                        normalizedDegree: "string",
-                        normalizedBranch: "string"
+                        { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                    ).then((response) => {
+                        navigate('/clubs-index-view')
                     }
-                },
-                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                ).then((response) => {
-                    navigate('/clubs-index-view')
-                }
-                ).catch((error) => {
-                    console.log(error.response.data);
+                    ).catch((error) => {
+                        console.log(error.response.data);
+                    })
                 })
             }
             )
@@ -310,7 +315,7 @@ export function ClubsCreateView() {
                                     <img className='image-display' src={data.clubPicture} />
                                 </div>
                                 <br />
-                                
+
                                 <div className="form-group">
                                     <button className="btn btn-success" onClick={submitForm}>Create</button>&nbsp;&nbsp;
                                     <Link className="btn btn-warning" to={"/clubs-index-view"}>Back to List</Link>
@@ -464,40 +469,42 @@ export function ClubsEditView() {
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_clubEmail === '' && data[0].err_president === '' && data[0].err_professorIncharge === '' && data[0].err_description === '' && data[0].err_price === '' && data[0].err_availableSeats === '') {
             authService.getAccessToken().then(token => {
-                axios.put(`clubs/${queryParameters.get('id')}`, {
-                    clubId: data[0].clubId,
-                    name: data[0].name,
-                    description: data[0].description,
-                    president: data[0].president,
-                    professorIncharge: data[0].professorIncharge,
-                    clubEmail: data[0].clubEmail.toLowerCase(),
-                    price: parseFloat(data[0].price),
-                    availableSeats: parseInt(data[0].availableSeats),
-                    clubPicture:data[0].clubPicture,
-                    students: {
-                        name: "string",
-                        email: "string",
-                        batch: "string",
-                        section: "string",
-                        rollNumber: 0,
-                        normalizedDegree: "string",
-                        normalizedBranch: "string"
+                authService.getUser().then(user => {
+                    axios.put(`clubs/${user.name}/${queryParameters.get('id')}`, {
+                        clubId: data[0].clubId,
+                        name: data[0].name,
+                        description: data[0].description,
+                        president: data[0].president,
+                        professorIncharge: data[0].professorIncharge,
+                        clubEmail: data[0].clubEmail.toLowerCase(),
+                        price: parseFloat(data[0].price),
+                        availableSeats: parseInt(data[0].availableSeats),
+                        clubPicture: data[0].clubPicture,
+                        students: {
+                            name: "string",
+                            email: "string",
+                            batch: "string",
+                            section: "string",
+                            rollNumber: 0,
+                            normalizedDegree: "string",
+                            normalizedBranch: "string"
+                        },
+                        professors: {
+                            professorId: "string",
+                            name: "string",
+                            email: "string",
+                            designation: "string",
+                            normalizedDegree: "string",
+                            normalizedBranch: "string"
+                        }
                     },
-                    professors: {
-                        professorId: "string",
-                        name: "string",
-                        email: "string",
-                        designation: "string",
-                        normalizedDegree: "string",
-                        normalizedBranch: "string"
+                        { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                    ).then((response) => {
+                        navigate('/clubs-index-view')
                     }
-                },
-                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                ).then((response) => {
-                    navigate('/clubs-index-view')
-                }
-                ).catch((error) => {
-                    console.log(error.response.data);
+                    ).catch((error) => {
+                        console.log(error.response.data);
+                    })
                 })
             }
             )
