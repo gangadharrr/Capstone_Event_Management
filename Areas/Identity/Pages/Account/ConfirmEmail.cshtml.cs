@@ -12,16 +12,34 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Capstone_Event_Management.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Capstone_Event_Management.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ILogger<RegisterModel> _logger;
+        private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
 
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
+        public ConfirmEmailModel(
+           UserManager<ApplicationUser> userManager,
+           SignInManager<ApplicationUser> signInManager,
+           ILogger<RegisterModel> logger,
+           RoleManager<IdentityRole> roleManager,
+           ApplicationDbContext context,
+           IEmailSender emailSender)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
+            _logger = logger;
+            _roleManager = roleManager;
+            _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -46,6 +64,45 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
             StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            if (ModelState.IsValid)
+            {
+                var _professor = _context.Professors.Find(user.Email);
+                var _student = _context.Students.Find(user.Email);
+                if (_professor != null)
+                {
+                    var role = _context.Roles.Find("Professor");
+                    var defaultrole = _roleManager.FindByNameAsync(role.Name).Result;
+                    if (defaultrole != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole.Name);
+                    }
+                }
+                else if (_student != null)
+                {
+                    var defaultrole = _roleManager.FindByNameAsync("Student").Result;
+                    if (defaultrole != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole.Name);
+                    }
+                }
+                else
+                {
+                    var defaultrole = _roleManager.FindByNameAsync("Member").Result;
+                    if (defaultrole != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole.Name);
+                    }
+                }
+                if(_context.Clubs.Select((e) => e.President).ToList().Contains(user.Email))
+                {
+                    var defaultrole = _roleManager.FindByNameAsync("President").Result;
+                    if (defaultrole != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole.Name);
+                    }
+                }
+
+            }
             return Page();
         }
     }

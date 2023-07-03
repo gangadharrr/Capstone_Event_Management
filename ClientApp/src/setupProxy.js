@@ -10,6 +10,8 @@ const context = [
   "/professors",
   "/clubs",
   "/customidentityrole",
+  "/clubmembers",
+  "/subscriptions",
   "/_configuration",
   "/.well-known",
   "/Identity",

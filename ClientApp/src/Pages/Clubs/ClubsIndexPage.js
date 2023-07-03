@@ -11,6 +11,8 @@ import authService from '../../components/api-authorization/AuthorizeService'
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react"
 import { fill } from "@cloudinary/url-gen/actions/resize";
+import { Alert } from 'reactstrap';
+import { ApplicationPaths, LoginActions } from '../../components/api-authorization/ApiAuthorizationConstants';
 export function ClubsIndexPage() {
   const [notifications, setNotifications] = useState(false)
   const location = useLocation()
@@ -35,7 +37,28 @@ export function ClubsIndexPage() {
     err_availableSeats: null,
     err_clubPicture: null
   }])
-
+  const [registered, setRegistered] = useState(false)
+  useEffect(() => {
+    authService.getUser().then(user => {
+      authService.getAccessToken().then(token => {
+        axios.get(`customidentityrole/${user.name}/${queryParameters.get('id')}`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((res) => {
+          axios.get(`clubmembers/${res.data.email}/${queryParameters.get('id')}`, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+          }
+          ).then((response) => {
+            setRegistered(response.data)
+          })
+          axios.get(`subscriptions/${res.data.email}/${queryParameters.get('id')}`, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+          }).then((response) => {
+            setNotifications(response.data)
+          })
+        })
+      })
+    })
+  },[])
   useEffect(() => {
     authService.getAccessToken().then(token => {
       axios.get(`clubs/${queryParameters.get('id')}`, {
@@ -62,7 +85,190 @@ export function ClubsIndexPage() {
         console.log(error.response.data);
       })
     })
-  },[])
+  }, [])
+  async function ClubRegistration() {
+    authService.getUser().then(user => {
+      authService.getAccessToken().then(token => {
+        axios.get(`customidentityrole/${user.name}?role=Student`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((res) => {
+          if (res.data) {
+            axios.get(`customidentityrole/${user.name}/1`, {
+              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }).then((res1) => {
+              axios.post(`clubmembers`, {
+                'id': 0,
+                'clubId': queryParameters.get('id'),
+                'email': res1.data.email,
+                clubs: {
+                  clubId: 0,
+                  name: 'string',
+                  description: 'string',
+                  president: 'string',
+                  professorIncharge: 'string',
+                  clubEmail: 'string',
+                  price: 0,
+                  availableSeats: 0,
+                  clubPicture: 'string',
+                  students: {
+                    name: 'string',
+                    email: 'string',
+                    batch: 'string',
+                    section: 'string',
+                    rollNumber: 0,
+                    normalizedDegree: 'string',
+                    normalizedBranch: 'string'
+                  },
+                  professors: {
+                    professorId: 'string',
+                    name: 'string',
+                    email: 'string',
+                    designation: 'string',
+                    normalizedDegree: 'string',
+                    normalizedBranch: 'string'
+                  }
+                },
+                students: {
+                  name: 'string',
+                  email: 'string',
+                  batch: 'string',
+                  section: 'string',
+                  rollNumber: 0,
+                  normalizedDegree: 'string',
+                  normalizedBranch: 'string'
+                }
+              },
+                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }).then((res2) => {
+                  axios.get(`clubs/${queryParameters.get('id')}`, {
+                    headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                  }).then((dataset) => {
+                    axios.put(`clubs/${queryParameters.get('id')}`, {
+                      clubId: data[0].clubId,
+                      name: data[0].name,
+                      description: data[0].description,
+                      president: data[0].president,
+                      professorIncharge: data[0].professorIncharge,
+                      clubEmail: data[0].clubEmail.toLowerCase(),
+                      price: parseFloat(data[0].price),
+                      availableSeats: parseInt(data[0].availableSeats)-1,
+                      clubPicture: data[0].clubPicture,
+                      students: {
+                          name: 'string',
+                          email: 'string',
+                          batch: 'string',
+                          section: 'string',
+                          rollNumber: 0,
+                          normalizedDegree: 'string',
+                          normalizedBranch: 'string'
+                      },
+                      professors: {
+                          professorId: 'string',
+                          name: 'string',
+                          email: 'string',
+                          designation: 'string',
+                          normalizedDegree: 'string',
+                          normalizedBranch: 'string'
+                      }
+                  },
+                      { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                  ).then((res4) => {
+
+                      setRegistered(true)
+                    })
+                  })
+                    
+                }).catch((error) => {
+                  console.log(error.response.data);
+                })
+            })
+          }
+          else {
+            alert("User is not a student")
+          }
+        })
+      }).catch((error) => {
+        navigate(ApplicationPaths.Login + `?returnUrl=${window.location.href}`)
+      })
+    }).catch((error) => {
+      navigate(ApplicationPaths.Login + `?returnUrl=${window.location.href}`)
+    })
+  }
+  async function clubSubscribe()
+  {
+    authService.getUser().then(user => {
+      authService.getAccessToken().then(token => {
+        axios.get(`customidentityrole/${user.name}/1`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((res) => {
+          console.log(res.data)
+          axios.post("subscriptions",  
+              {
+                "id": 0,
+                "clubId": queryParameters.get('id'),
+                "email": res.data.email,
+                "dateTimeNow": "2023-07-03T12:22:00.113Z",
+                "clubs": {
+                  "clubId": 0,
+                  "name": "string",
+                  "description": "string",
+                  "president": "string",
+                  "professorIncharge": "string",
+                  "clubEmail": "string",
+                  "price": 0,
+                  "availableSeats": 0,
+                  "clubPicture": "string",
+                  "students": {
+                    "name": "string",
+                    "email": "string",
+                    "batch": "string",
+                    "section": "string",
+                    "rollNumber": 0,
+                    "normalizedDegree": "string",
+                    "normalizedBranch": "string"
+                  },
+                  "professors": {
+                    "professorId": "string",
+                    "name": "string",
+                    "email": "string",
+                    "designation": "string",
+                    "normalizedDegree": "string",
+                    "normalizedBranch": "string"
+                  }
+                }
+              }
+          ,{
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+          }
+          ).then((res1) => {
+            setNotifications(true)
+          })
+        })
+        })
+      }).catch((error) => {
+          console.log(error.response.data); 
+        })
+  }
+  async function clubUnSubscribe()
+  {
+    authService.getUser().then(user => {
+      authService.getAccessToken().then(token => {
+        axios.get(`customidentityrole/${user.name}/1`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((res) => {
+          axios.delete(`/subscriptions/${queryParameters.get('id')}/${res.data.email}`,
+          {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+          }
+          ).then((res1) => {
+
+            setNotifications(false)
+          })
+        })
+        })
+      }).catch((error) => {
+          console.log(error.response.data); 
+        })
+  }
   return (
     <React.Fragment>
       {
@@ -75,26 +281,28 @@ export function ClubsIndexPage() {
               <div className='club-index-page-body'>
                 <div className='club-index-page-head'>
                   <div>
-                  <div className='club-index-page-head-img'>
-                    <img src={val.clubPicture} className="club-img-profile" alt="..." />
-                  </div>
+                    <div className='club-index-page-head-img'>
+                      <img src={val.clubPicture} className="club-img-profile" alt="..." />
+                    </div>
 
-                  <h1 className='club-index-page-title'>{val.name}</h1>
-                  <p className='club-index-page-email'><FontAwesomeIcon icon={faEnvelope} /> {val.clubEmail}</p>
+                    <h1 className='club-index-page-title'>{val.name}</h1>
+                    <p className='club-index-page-email'><FontAwesomeIcon icon={faEnvelope} /> {val.clubEmail}</p>
                   </div>
                   <div id="button-area">
-
-                  <button className='btn btn-primary' id='register-button'>Join {val.price == 0 ? "free" : `of ₹${val.price}`} </button>
-                  {notifications ? <button className='btn btn-success ' id='notification-button'onClick={() => setNotifications(!notifications)}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button> :
-                    <button className='btn btn-outline-success' id='notification-button' onClick={() => setNotifications(!notifications)}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button>
-                  }
+                    {registered
+                      ? <button className='btn btn-outline-success'  id='register-button' >Registered</button>
+                      : <button className='btn btn-primary' id='register-button'  onClick={ClubRegistration}>Join {val.price == 0 ? "free" : `for ₹${val.price}`} </button>
+                    }
+                    {notifications ? <button className='btn btn-success' id='notification-button' onClick={clubUnSubscribe}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button> :
+                      <button className='btn btn-outline-success' id='notification-button' onClick={clubSubscribe}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button>
+                    }
                   </div>
                 </div>
                 <hr />
                 <div className='club-index-page-content'>
                   <h4>About the Club</h4>
                   <p>{val.description}</p>
-                </div>  
+                </div>
                 <hr />
                 <div className='club-index-page-footer'>
                   <div className='club-index-page-footer-title'><h4>Club Guardians</h4></div>

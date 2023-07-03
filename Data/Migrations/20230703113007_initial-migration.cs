@@ -280,6 +280,60 @@ namespace Capstone_Event_Management.Migrations
                         onDelete: ReferentialAction.NoAction);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ClubMembers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClubId = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateTimeNow = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClubMembers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClubMembers_Clubs_ClubId",
+                        column: x => x.ClubId,
+                        principalTable: "Clubs",
+                        principalColumn: "ClubId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClubMembers_Students_Email",
+                        column: x => x.Email,
+                        principalTable: "Students",
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClubId = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateTimeNow = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_AspNetUsers_Email",
+                        column: x => x.Email,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Clubs_ClubId",
+                        column: x => x.ClubId,
+                        principalTable: "Clubs",
+                        principalColumn: "ClubId",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -318,6 +372,16 @@ namespace Capstone_Event_Management.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClubMembers_ClubId",
+                table: "ClubMembers",
+                column: "ClubId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClubMembers_Email",
+                table: "ClubMembers",
+                column: "Email");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clubs_ClubEmail",
@@ -382,6 +446,16 @@ namespace Capstone_Event_Management.Migrations
                 table: "Students",
                 column: "RollNumber",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_ClubId",
+                table: "Subscriptions",
+                column: "ClubId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_Email",
+                table: "Subscriptions",
+                column: "Email");
         }
 
         /// <inheritdoc />
@@ -403,7 +477,7 @@ namespace Capstone_Event_Management.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Clubs");
+                name: "ClubMembers");
 
             migrationBuilder.DropTable(
                 name: "DeviceCodes");
@@ -415,10 +489,16 @@ namespace Capstone_Event_Management.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
+                name: "Subscriptions");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Clubs");
 
             migrationBuilder.DropTable(
                 name: "Professors");

@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Principal;
 using System.Security.Claims;
 using System.Data;
+using static System.Reflection.Metadata.BlobBuilder;
+using static Duende.IdentityServer.Models.IdentityResources;
 
 namespace Capstone_Event_Management.Controllers
 {
@@ -62,6 +64,22 @@ namespace Capstone_Event_Management.Controllers
               return NotFound();
           }
             var clubs = await _context.Clubs.FindAsync(id);
+
+            if (clubs == null)
+            {
+                return NotFound();
+            }
+
+            return clubs;
+        }
+        [HttpGet("{email}/{idd}")]
+        public async Task<ActionResult<IEnumerable<Clubs>>> GetClubs(string email,int idd)
+        {
+            if (_context.Clubs == null)
+            {
+                return NotFound();
+            }
+            var clubs = await _context.Clubs.Where(e=>e.President==email).ToListAsync();
 
             if (clubs == null)
             {
@@ -140,9 +158,11 @@ namespace Capstone_Event_Management.Controllers
                 }
                 _context.Entry(clubs).State = EntityState.Modified;
 
+
                 try
                 {
                     await _context.SaveChangesAsync();
+                await AssignRole();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -163,7 +183,91 @@ namespace Capstone_Event_Management.Controllers
                 return StatusCode(401, "UnAuthorized Access");
             }
         }
+        private async Task<int> AssignRole()
+        {
+            var presidents = await _userManager.GetUsersInRoleAsync("President");
+            if(presidents != null)
+            {
+                var presidentEmails=presidents.Select(x => x.Email).ToList();
+                var _clubsEmails =  _context.Clubs.Select(e=>e.President).ToList();
+                var emailsIntersection=presidentEmails.Intersect(_clubsEmails);
+                foreach (var email in _clubsEmails) 
+                {
+                    if(!emailsIntersection.Contains(email))
+                    {
+                        var _userCurrentPresident = await _userManager.FindByEmailAsync(email);
+                        if (_userCurrentPresident != null )
+                        {
+                            IdentityResult roleresult = await _userManager.AddToRoleAsync(_userCurrentPresident, "President");
+                        }
+                    }
+                }
+                foreach(var email in presidentEmails)
+                {
+                    if(!emailsIntersection.Contains(email))
+                    {
+                        var _userPreviousPresident = await _userManager.FindByEmailAsync(email);
 
+                        if (_userPreviousPresident != null)
+                        {
+                            await _userManager.RemoveFromRoleAsync(_userPreviousPresident, "President");
+                        }
+                    }
+                }
+           
+            }
+            else
+            {
+                var _clubsEmails = _context.Clubs.Select(e => e.President).ToList();
+                foreach(var email in _clubsEmails)
+                {
+
+                    var _userCurrentPresident = await _userManager.FindByEmailAsync(email);
+                    if (_userCurrentPresident != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(_userCurrentPresident, "President");
+                    }
+                }
+            }
+            _context.SaveChanges();
+            return 0;
+        }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Clubs>> PutClubsWithSeats(int id,Clubs clubs)
+        {
+                if (id != clubs.ClubId)
+                {
+                    return BadRequest();
+                }
+                clubs.Students = await _context.Students.FindAsync(clubs.President);
+                clubs.Professors = await _context.Professors.FindAsync(clubs.ProfessorIncharge);
+                if (clubs.Students == null || clubs.Professors == null)
+                {
+                    return Problem("Entity set 'Email of student or Professor'  is null.");
+
+                }
+                _context.Entry(clubs).State = EntityState.Modified;
+
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClubsExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return NoContent();
+           
+        }
         // POST: api/Clubs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]

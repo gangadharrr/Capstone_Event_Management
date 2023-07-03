@@ -1,6 +1,7 @@
-import React, { Component, Fragment,useState } from 'react';
-import { DropdownItem, DropdownMenu, NavItem, NavLink ,DropdownToggle,Dropdown} from 'reactstrap';
+import React, { Component, Fragment, useState } from 'react';
+import { DropdownItem, DropdownMenu, NavbarToggler, Navbar, Collapse, NavItem, NavLink, DropdownToggle, Dropdown } from 'reactstrap';
 import { Link } from 'react-router-dom';
+
 import authService from './AuthorizeService';
 import { ApplicationPaths } from './ApiAuthorizationConstants';
 import { Cloudinary } from "@cloudinary/url-gen";
@@ -13,7 +14,7 @@ export class LoginMenu extends Component {
     this.state = {
       isAuthenticated: false,
       userName: null,
-      dropdownOpen:false
+      dropdownOpen: false
     };
   }
 
@@ -48,20 +49,21 @@ export class LoginMenu extends Component {
     }
   }
 
-   toggle = () => {this.setState({dropdownOpen:!this.state.dropdownOpen})}
+  toggle = () => { this.setState({ dropdownOpen: !this.state.dropdownOpen }) }
   authenticatedView(userName, profilePath, logoutPath, logoutState) {
-    const cld = new Cloudinary({cloud:{cloudName: 'dujyzevpx'}});
-    const myImg=cld.image(`Images/${userName}`);
+    const cld = new Cloudinary({ cloud: { cloudName: 'dujyzevpx' } });
+    const myImg = cld.image(`Images/${userName}`);
 
 
     return (<Fragment>
-     <Dropdown isOpen={this.state.dropdownOpen} toggle={()=>{this.toggle()}} direction="down" menuRole="listbox" >
-        <DropdownToggle  color='dark'><AdvancedImage cldImg={myImg} style={{height:"39px",width:"39px",borderRadius:"50%"}} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav"  /> </DropdownToggle>
-        <DropdownMenu dark>  
-          <DropdownItem ><Link to={profilePath} style={{color:"white"}}>{userName}</Link></DropdownItem>
+      <Dropdown isOpen={this.state.dropdownOpen} toggle={() => { this.toggle() }} direction="down" menuRole="listbox" >
+        <DropdownToggle color='dark'><AdvancedImage cldImg={myImg} style={{ height: "39px", width: "39px", borderRadius: "50%" }} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav" /> </DropdownToggle>
+        <DropdownMenu dark>
+          <DropdownItem ><NavLink replace tag={Link} className="text-light" to={profilePath} style={{ color: "white" }}>{userName}</NavLink></DropdownItem>
           <DropdownItem > <NavLink replace tag={Link} className="text-light" to={logoutPath} state={logoutState}>Logout</NavLink></DropdownItem>
         </DropdownMenu>
-        </Dropdown>
+      </Dropdown>
+
       {/* <NavItem>
         <NavLink tag={Link} className="text-dark" to={profilePath} style={{display:"flex",flexDirection:"row"}}> <AdvancedImage cldImg={myImg} style={{height:"39px",width:"39px",borderRadius:"50%"}} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav"  /> {userName.split("@")[0]}</NavLink>
       </NavItem>
@@ -72,13 +74,13 @@ export class LoginMenu extends Component {
   }
 
   anonymousView(registerPath, loginPath) {
-    return (<Fragment>
+    return (  <ul className="navbar-nav flex-grow" style={{ display: "flex", columnGap: "10%",marginRight: "5%" }}>
       <NavItem>
-        <NavLink tag={Link} className="text-dark" to={registerPath}>Register</NavLink>
+        <NavLink tag={Link} id='nav-item'  className="text-light" to={registerPath}>Register</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink tag={Link} className="text-dark" to={loginPath}>Login</NavLink>
+        <NavLink tag={Link} id='nav-item'  className="text-light" to={loginPath}>Login</NavLink>
       </NavItem>
-    </Fragment>);
+  </ul>);
   }
 }

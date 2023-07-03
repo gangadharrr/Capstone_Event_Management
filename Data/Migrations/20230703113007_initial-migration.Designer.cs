@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Capstone_Event_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230629101332_initial-migration")]
+    [Migration("20230703113007_initial-migration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -96,6 +96,33 @@ namespace Capstone_Event_Management.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Capstone_Event_Management.Models.ClubMembers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTimeNow")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClubId");
+
+                    b.HasIndex("Email");
+
+                    b.ToTable("ClubMembers");
                 });
 
             modelBuilder.Entity("Capstone_Event_Management.Models.Clubs", b =>
@@ -217,6 +244,33 @@ namespace Capstone_Event_Management.Migrations
                         .IsUnique();
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("Capstone_Event_Management.Models.Subscriptions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTimeNow")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClubId");
+
+                    b.HasIndex("Email");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.DeviceFlowCodes", b =>
@@ -497,6 +551,25 @@ namespace Capstone_Event_Management.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Capstone_Event_Management.Models.ClubMembers", b =>
+                {
+                    b.HasOne("Capstone_Event_Management.Models.Clubs", "Clubs")
+                        .WithMany()
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Capstone_Event_Management.Models.Students", "Students")
+                        .WithMany()
+                        .HasForeignKey("Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clubs");
+
+                    b.Navigation("Students");
+                });
+
             modelBuilder.Entity("Capstone_Event_Management.Models.Clubs", b =>
                 {
                     b.HasOne("Capstone_Event_Management.Models.Students", "Students")
@@ -514,6 +587,25 @@ namespace Capstone_Event_Management.Migrations
                     b.Navigation("Professors");
 
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("Capstone_Event_Management.Models.Subscriptions", b =>
+                {
+                    b.HasOne("Capstone_Event_Management.Models.Clubs", "Clubs")
+                        .WithMany()
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Capstone_Event_Management.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Clubs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

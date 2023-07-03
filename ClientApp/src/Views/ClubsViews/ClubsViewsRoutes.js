@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClubsIndexView, ClubsCreateView, ClubsEditView, ClubsDetailsView } from './ClubsViews';
+import { ClubsIndexView, ClubsCreateView, ClubsEditView, ClubsDetailsView, ClubsPresidentView, ClubsPresidentDetailsView, ClubsPresidentEditView } from './ClubsViews';
 export const ClubsViewsRoutes = [
     {
         path: '/clubs-index-view',
@@ -20,5 +20,20 @@ export const ClubsViewsRoutes = [
         path: '/clubs-details-view',
         requireAuth: true,
         element: <ClubsDetailsView />
+    },
+    {
+        path:'/clubs-president-view',
+        requireAuth:true,
+        element:<ClubsPresidentView />
+    },
+    {
+        path:'/clubs-president-edit-view',
+        requireAuth:true,
+        element:<ClubsPresidentEditView />
+    },
+    {
+        path:'/clubs-president-details-view',
+        requireAuth:true,
+        element:<ClubsPresidentDetailsView />
     }
 ]

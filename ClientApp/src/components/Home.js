@@ -11,16 +11,10 @@ export function Home() {
   const [spinner, setSpinner] = useState(true);
   const ref = useRef();
   useEffect(() => {
-    authService.getAccessToken().then(token => {
-        
-        axios.get(`clubs`, {
-          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        }).then((response) => {
+        axios.get(`clubs`).then((response) => {
           setData(response.data)
           setSpinner(false)
         })
-      
-    })
   })
   const scroll = (scrollOffset) => {
     ref.current.scrollLeft += scrollOffset;

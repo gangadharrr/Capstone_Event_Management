@@ -2,6 +2,7 @@
   white-space: normal;
   text-align: center;
   word-break: break-all;
+  align-self: center;
 }
 
 html {
@@ -13,10 +14,19 @@ html {
   }
 }
 #nav-list{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  
+  display: flex; 
+  align-items: flex-end; 
+  justify-content: flex-end;
+  align-content:center;
+  column-gap: 1%;
+  width: 100%;
+}
+#nav-item{
+  border-radius: 5px;
+}
+#nav-item:hover{
+  background-color: rgb(73, 73, 73);
+  border-color: rgb(255, 255, 255);
 }
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
