@@ -12,6 +12,7 @@ const context = [
   "/customidentityrole",
   "/clubmembers",
   "/subscriptions",
+  "/collegeevents",
   "/_configuration",
   "/.well-known",
   "/Identity",

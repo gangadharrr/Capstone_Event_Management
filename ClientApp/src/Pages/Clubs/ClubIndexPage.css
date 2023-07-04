@@ -70,10 +70,6 @@
     min-width: 20px;
     font-weight: 400;
 }
-#register-button:hover{
-    background-color: #fff;
-    color: rgb(1, 142, 1);
-}
 #notification-button{
     border-radius: 25px;
     font-size: large;
@@ -84,8 +80,6 @@
     min-height: 20px;
     height: 100%;
     width: 100%;
-   
-
 }
 .club-index-page-content{
     line-height: 200%;

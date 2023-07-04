@@ -134,6 +134,24 @@ namespace Capstone_Event_Management.Controllers
 
             return NoContent();
         }
+        [HttpDelete("{clubId}/{email}")]
+        public async Task<IActionResult> DeleteClubMembers(int clubId, string email)
+        {
+            if (_context.ClubMembers == null)
+            {
+                return NotFound();
+            }
+            var clubMembers = await _context.ClubMembers.Where(e=>e.ClubId==clubId&&e.Email==email).FirstOrDefaultAsync();
+            if (clubMembers == null)
+            {
+                return NotFound();
+            }
+
+            _context.ClubMembers.Remove(clubMembers);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
         private bool ClubMembersExists(int id)
         {

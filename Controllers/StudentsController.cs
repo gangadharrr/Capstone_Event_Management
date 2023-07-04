@@ -19,10 +19,12 @@ namespace Capstone_Event_Management.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public StudentsController(ApplicationDbContext context)
+        public StudentsController(ApplicationDbContext context,UserManager<ApplicationUser> userManager)
         { 
             _context = context;
+            _userManager = userManager;
            
         }
 
@@ -39,7 +41,7 @@ namespace Capstone_Event_Management.Controllers
 
         // GET: api/Students/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Students>> GetStudents(string id)
+        public async Task<ActionResult<Students>> GetStudent(string id)
         {
           if (_context.Students == null)
           {
@@ -58,84 +60,106 @@ namespace Capstone_Event_Management.Controllers
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudents(string id, Students students)
+        [HttpPut("{userName}/{id}")]
+        public async Task<IActionResult> PutStudents(string id,string userName,Students students)
         {
-            if (id != students.Email)
+            var user = await _userManager.FindByNameAsync(userName);
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                return BadRequest();
-            }
 
-            _context.Entry(students).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentsExists(id))
+                if (id != students.Email)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
+                _context.Entry(students).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!StudentsExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(401, "UnAuthorized Access");
+            }
         }
 
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<Students>> PostStudents(Students students)
+        [HttpPost("{userName}")]
+        public async Task<ActionResult<Students>> PostStudents(string userName,Students students)
         {
-          if (_context.Students == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.Students'  is null.");
-          }
-            _context.Students.Add(students);
-            try
+            var user = await _userManager.FindByNameAsync(userName);
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (StudentsExists(students.Email))
+                if (_context.Students == null)
                 {
-                    return Conflict();
+                    return Problem("Entity set 'ApplicationDbContext.Students'  is null.");
                 }
-                else
+                _context.Students.Add(students);
+                try
                 {
-                    throw;
+                    await _context.SaveChangesAsync();
                 }
-            }
+                catch (DbUpdateException)
+                {
+                    if (StudentsExists(students.Email))
+                    {
+                        return Conflict();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
 
-            return CreatedAtAction("GetStudents", new { id = students.Email }, students);
+                return CreatedAtAction("GetStudents", new { id = students.Email }, students);
+            }
+            else 
+            {
+                return NoContent(); 
+            }
         }
 
         // DELETE: api/Students/5
         [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudents(string id)
+        [HttpDelete("{userName}/{id}")]
+        public async Task<IActionResult> DeleteStudents(string id,string userName)
         {
-            if (_context.Students == null)
+            var user = await _userManager.FindByNameAsync(userName);
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                return NotFound();
-            }
-            var students = await _context.Students.FindAsync(id);
-            if (students == null)
-            {
-                return NotFound();
-            }
+                if (_context.Students == null)
+                {
+                    return NotFound();
+                }
+                var students = await _context.Students.FindAsync(id);
+                if (students == null)
+                {
+                    return NotFound();
+                }
 
-            _context.Students.Remove(students);
-            await _context.SaveChangesAsync();
+                _context.Students.Remove(students);
+                await _context.SaveChangesAsync();
 
-            return NoContent();
+                return NoContent();
+            }
+            else { return StatusCode(401,"UnAuthorized Access"); }
         }
 
         private bool StudentsExists(string id)

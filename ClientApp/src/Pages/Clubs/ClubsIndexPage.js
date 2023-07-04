@@ -19,6 +19,7 @@ export function ClubsIndexPage() {
   const [spinner, setSpinner] = useState(true);
   const queryParameters = new URLSearchParams(location.search)
   const navigate = useNavigate()
+  const [hover,setHover]=useState(false)
   const [data, setData] = useState([{
     name: null,
     description: null,
@@ -193,6 +194,62 @@ export function ClubsIndexPage() {
       navigate(ApplicationPaths.Login + `?returnUrl=${window.location.href}`)
     })
   }
+  async function clubUnRegistration()
+  {
+    authService.getUser().then(user => {
+      authService.getAccessToken().then(token => {
+        axios.get(`customidentityrole/${user.name}/1`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((res) => {
+          axios.delete(`/clubmembers/${queryParameters.get('id')}/${res.data.email}`,
+          {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+          }
+          ).then((res1) => {
+            axios.get(`clubs/${queryParameters.get('id')}`, {
+              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }).then((dataset) => {
+              axios.put(`clubs/${queryParameters.get('id')}`, {
+                clubId: data[0].clubId,
+                name: data[0].name,
+                description: data[0].description,
+                president: data[0].president,
+                professorIncharge: data[0].professorIncharge,
+                clubEmail: data[0].clubEmail.toLowerCase(),
+                price: parseFloat(data[0].price),
+                availableSeats: parseInt(data[0].availableSeats)+1,
+                clubPicture: data[0].clubPicture,
+                students: {
+                    name: 'string',
+                    email: 'string',
+                    batch: 'string',
+                    section: 'string',
+                    rollNumber: 0,
+                    normalizedDegree: 'string',
+                    normalizedBranch: 'string'
+                },
+                professors: {
+                    professorId: 'string',
+                    name: 'string',
+                    email: 'string',
+                    designation: 'string',
+                    normalizedDegree: 'string',
+                    normalizedBranch: 'string'
+                }
+            },
+                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+            ).then((res4) => {
+
+                setRegistered(false)
+              })
+            })
+          })
+        })
+        })
+      }).catch((error) => {
+          console.log(error.response.data); 
+        })
+  }
   async function clubSubscribe()
   {
     authService.getUser().then(user => {
@@ -267,8 +324,9 @@ export function ClubsIndexPage() {
         })
       }).catch((error) => {
           console.log(error.response.data); 
-        })
+    })
   }
+
   return (
     <React.Fragment>
       {
@@ -284,17 +342,20 @@ export function ClubsIndexPage() {
                     <div className='club-index-page-head-img'>
                       <img src={val.clubPicture} className="club-img-profile" alt="..." />
                     </div>
-
                     <h1 className='club-index-page-title'>{val.name}</h1>
                     <p className='club-index-page-email'><FontAwesomeIcon icon={faEnvelope} /> {val.clubEmail}</p>
                   </div>
                   <div id="button-area">
-                    {registered
-                      ? <button className='btn btn-outline-success'  id='register-button' >Registered</button>
+                    {val.availableSeats==0
+                    ?<button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
+                    :registered
+                      ?hover ?<button className='btn btn-danger' onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} onClick={clubUnRegistration} id='register-button'>Unregister</button>:<button className='btn btn-outline-success' onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} onClick={clubUnRegistration} id='register-button'>Registered</button>
                       : <button className='btn btn-primary' id='register-button'  onClick={ClubRegistration}>Join {val.price == 0 ? "free" : `for ₹${val.price}`} </button>
+                    
                     }
-                    {notifications ? <button className='btn btn-success' id='notification-button' onClick={clubUnSubscribe}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button> :
-                      <button className='btn btn-outline-success' id='notification-button' onClick={clubSubscribe}><FontAwesomeIcon icon={notifications ? faBell : faBellSlash} /></button>
+                    {notifications 
+                      ?<button className='btn btn-outline-success' id='notification-button' onClick={clubUnSubscribe}><FontAwesomeIcon icon={notifications ?faBellSlash:faBell} /></button>
+                     :<button className='btn btn-success' id='notification-button' onClick={clubSubscribe}><FontAwesomeIcon icon={notifications ?faBellSlash:faBell} /></button> 
                     }
                   </div>
                 </div>

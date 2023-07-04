@@ -1,0 +1,92 @@
+﻿@model Capstone_Event_Management.Models.CollegeEvents
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>CollegeEvents</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ClubId" class="control-label"></label>
+                <select asp-for="ClubId" class ="form-control" asp-items="ViewBag.ClubId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ResourcePerson" class="control-label"></label>
+                <input asp-for="ResourcePerson" class="form-control" />
+                <span asp-validation-for="ResourcePerson" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiscountPrice" class="control-label"></label>
+                <input asp-for="DiscountPrice" class="form-control" />
+                <span asp-validation-for="DiscountPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ModeOfEvent" class="control-label"></label>
+                <input asp-for="ModeOfEvent" class="form-control" />
+                <span asp-validation-for="ModeOfEvent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDateTimeOfEvent" class="control-label"></label>
+                <input asp-for="StartDateTimeOfEvent" class="form-control" />
+                <span asp-validation-for="StartDateTimeOfEvent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDateTimeOfEvent" class="control-label"></label>
+                <input asp-for="EndDateTimeOfEvent" class="form-control" />
+                <span asp-validation-for="EndDateTimeOfEvent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastDayToRegister" class="control-label"></label>
+                <input asp-for="LastDayToRegister" class="form-control" />
+                <span asp-validation-for="LastDayToRegister" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PosterUrl" class="control-label"></label>
+                <input asp-for="PosterUrl" class="form-control" />
+                <span asp-validation-for="PosterUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccessLevel" class="control-label"></label>
+                <input asp-for="AccessLevel" class="form-control" />
+                <span asp-validation-for="AccessLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Venue" class="control-label"></label>
+                <input asp-for="Venue" class="form-control" />
+                <span asp-validation-for="Venue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AvailableSeats" class="control-label"></label>
+                <input asp-for="AvailableSeats" class="form-control" />
+                <span asp-validation-for="AvailableSeats" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

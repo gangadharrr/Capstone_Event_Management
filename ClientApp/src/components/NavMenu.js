@@ -89,7 +89,10 @@ export function NavMenu() {
                   </NavItem>,
                   <NavItem>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/clubs-index-view">Clubs</NavLink>
-                  </NavItem>
+                  </NavItem>,
+                  <NavItem>
+                  <NavLink tag={Link} id='nav-item' className="text-light" to="/college-events-index-view">Events</NavLink>
+                </NavItem>
                 ]
               }
               else if (roles.includes('President') || roles.includes('Professor')) {

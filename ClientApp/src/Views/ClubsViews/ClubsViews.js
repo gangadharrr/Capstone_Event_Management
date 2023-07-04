@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
 import authService from '../../components/api-authorization/AuthorizeService';
-import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
-import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
 import Select from "react-select";
 import "./ClubsViews.css"
 
@@ -729,7 +728,8 @@ export function ClubsPresidentView() {
                                     </td>
                                     <td>
                                         <Link className='btn btn-primary' to={"/clubs-president-edit-view?id=" + val.clubId} >Edit</Link> |&nbsp;
-                                        <Link className='btn btn-warning' to={"/clubs-president-details-view?id=" + val.clubId}>Details</Link> 
+                                        <Link className='btn btn-warning' to={"/clubs-president-details-view?id=" + val.clubId}>Details</Link> |&nbsp; 
+                                        <Link className='btn btn-dark' to={"/club-members-index-view?id=" + val.clubId}>Club Members</Link> 
                                     </td>
                                 </tr>
                             )

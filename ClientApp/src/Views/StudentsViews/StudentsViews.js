@@ -92,12 +92,14 @@ export function StudentsIndexView() {
                             data.map(
                                 (val, index) => {
                                     authService.getAccessToken().then(token => {
-                                        axios.delete(`students/${val.email}`, {
-                                            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-                                        }).then((response) => {
-                                            setProgressBar({ value: parseInt(((index + 1) / data.length) * 100), status: true });
-                                        }).catch((error) => {
-                                            console.log(error)
+                                        authService.getUser().then(user => {
+                                            axios.delete(`students/${user.name}/${val.email}`, {
+                                                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                                            }).then((response) => {
+                                                setProgressBar({ value: parseInt(((index + 1) / data.length) * 100), status: true });
+                                            }).catch((error) => {
+                                                console.log(error)
+                                            })
                                         })
                                     })
                                 }
@@ -156,12 +158,14 @@ export function StudentsIndexView() {
                                                 onClick={() => {
                                                     if (window.confirm(`Are you sure you want to delete this student (` + val.email + ")?")) {
                                                         authService.getAccessToken().then(token => {
-                                                            axios.delete(`students/${val.email}`, {
-                                                                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-                                                            }).then((response) => {
-                                                                navigate("/students-index-view");
-                                                            }).catch((error) => {
-                                                                console.log(error)
+                                                            authService.getUser().then(user => {
+                                                                axios.delete(`students/${user.name}/${val.email}`, {
+                                                                    headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                                                                }).then((response) => {
+                                                                    navigate("/students-index-view");
+                                                                }).catch((error) => {
+                                                                    console.log(error)
+                                                                })
                                                             })
                                                         })
                                                     }
@@ -230,21 +234,24 @@ export function StudentsCreateView() {
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_email === '' && data[0].err_batch === '' && data[0].err_section === '' && data[0].err_rollNumber === '' && data[0].err_normalizedDegree === '' && data[0].err_normalizedBranch === '') {
             authService.getAccessToken().then(token => {
-                axios.post('students', {
-                    name: data[0].name,
-                    email: data[0].email.toLowerCase(),
-                    batch: data[0].batch,
-                    section: data[0].section,
-                    rollNumber: parseInt(data[0].rollNumber),
-                    normalizedDegree: data[0].normalizedDegree,
-                    normalizedBranch: data[0].normalizedBranch,
-                },
-                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                ).then((response) => {
-                    navigate('/students-index-view')
-                }
-                ).catch((error) => {
-                    console.log(error)
+                authService.getUser().then(user => {
+                    
+                    axios.post(`students/${user.name}`, {
+                        name: data[0].name,
+                        email: data[0].email.toLowerCase(),
+                        batch: data[0].batch,
+                        section: data[0].section,
+                        rollNumber: parseInt(data[0].rollNumber),
+                        normalizedDegree: data[0].normalizedDegree,
+                        normalizedBranch: data[0].normalizedBranch,
+                    },
+                        { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                    ).then((response) => {
+                        navigate('/students-index-view')
+                    }
+                    ).catch((error) => {
+                        console.log(error)
+                    })
                 })
             }
             )
