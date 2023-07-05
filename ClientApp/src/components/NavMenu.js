@@ -81,33 +81,33 @@ export function NavMenu() {
               let _rows=[]
               if (roles.includes('Admin')) {
                  _rows = [
-                  <NavItem>
-                    <NavLink tag={Link} id='nav-item' className="text-light" to="/students-index-view" >Students</NavLink>
+                  <NavItem key={1}>
+                    <NavLink tag={Link} id='nav-item' className="text-light nav-item" to="/students-index-view" >Students</NavLink>
                   </NavItem>,
-                  <NavItem>
+                  <NavItem key={2}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/professors-index-view">Professors</NavLink>
                   </NavItem>,
-                  <NavItem>
+                  <NavItem key={3}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/clubs-index-view">Clubs</NavLink>
                   </NavItem>,
-                  <NavItem>
+                  <NavItem key={4}>
                   <NavLink tag={Link} id='nav-item' className="text-light" to="/college-events-index-view">Events</NavLink>
                 </NavItem>
                 ]
               }
               else if (roles.includes('President') || roles.includes('Professor')) {
                 _rows = [
-                  <NavItem>
+                  <NavItem key={1}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/clubs-president-view">Clubs</NavLink>
                   </NavItem>
                 ]
               }
               else if (roles.includes('Students')) {
                 _rows = [
-                  <NavItem>
+                  <NavItem key={1}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/professors-index-view" >Professors</NavLink>
                   </NavItem>,
-                  <NavItem>
+                  <NavItem key={2}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/clubs-index-view">Clubs</NavLink>
                   </NavItem>
                 ]

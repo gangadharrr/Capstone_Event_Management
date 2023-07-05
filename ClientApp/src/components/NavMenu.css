@@ -21,10 +21,10 @@ html {
   column-gap: 1%;
   width: 100%;
 }
-#nav-item{
+.nav-item{
   border-radius: 5px;
 }
-#nav-item:hover{
+.nav-item:hover{
   background-color: rgb(73, 73, 73);
   border-color: rgb(255, 255, 255);
 }

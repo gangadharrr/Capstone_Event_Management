@@ -44,7 +44,7 @@ namespace Capstone_Event_Management.Controllers
         }
 
         // GET: api/Clubs
-        [HttpGet()]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Clubs>>> GetClubs()
         {
                 if (_context.Clubs == null)
@@ -72,6 +72,7 @@ namespace Capstone_Event_Management.Controllers
 
             return clubs;
         }
+        [Authorize]
         [HttpGet("{email}/{idd}")]
         public async Task<ActionResult<IEnumerable<Clubs>>> GetClubs(string email,int idd)
         {
@@ -79,7 +80,17 @@ namespace Capstone_Event_Management.Controllers
             {
                 return NotFound();
             }
-            var clubs = await _context.Clubs.Where(e=>e.President==email).ToListAsync();
+            var user=await _userManager.FindByEmailAsync(email);
+            List<Clubs> clubs=null;
+            if(user != null && await _userManager.IsInRoleAsync(user,"Admin"))
+            {
+                 clubs = await _context.Clubs.ToListAsync();
+            }
+            else
+            {
+
+                 clubs = await _context.Clubs.Where(e=>e.President==email).ToListAsync();
+            }
 
             if (clubs == null)
             {
@@ -109,60 +120,13 @@ namespace Capstone_Event_Management.Controllers
                     return Problem("Entity set 'Email of student or Professor'  is null.");
 
                 }
-                var dataUrl = clubs.ClubPicture;
-                var matchGroups = Regex.Match(dataUrl, @"^data:((?<type>[\w\/]+))?;base64,(?<data>.+)$").Groups;
-                var base64Data = matchGroups["data"].Value;
-                if (base64Data != "")
-                {
-                    var binData = Convert.FromBase64String(base64Data);
-                    Stream stream = new MemoryStream(binData);
-                    var uploadParams = new ImageUploadParams()
-                    {
-                        File = new FileDescription($"Club_{clubs.ClubEmail}_DisplayPicture", stream),
-                        PublicId = $"Club_{clubs.ClubEmail}_DisplayPicture",
-                        Folder = "Images"
-
-                    };
-                    var uploadResult = cloudinary.Upload(uploadParams);
-                    var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
-                    Console.WriteLine($"Images/Club_{clubs.ClubEmail}_DisplayPicture" + GetResponse.Url + GetResponse.StatusCode.ToString());
-                    if (GetResponse.StatusCode.ToString() == "OK")
-                    {
-                        clubs.ClubPicture = GetResponse.Url;
-                    }
-                    else
-                    {
-                        throw new Exception("Error in Data Fetching");
-                    }
-                }
-                else
-                {
-                    var uploadParams = new ImageUploadParams()
-                    {
-                        File = new FileDescription(clubs.ClubPicture),
-                        PublicId = $"Club_{clubs.ClubEmail}_DisplayPicture",
-                        Folder = "Images"
-
-                    };
-                    var uploadResult = cloudinary.Upload(uploadParams);
-                    var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
-                    Console.WriteLine($"Images/Club_{clubs.ClubEmail}_DisplayPicture" + GetResponse.Url + GetResponse.StatusCode.ToString());
-                    if (GetResponse.StatusCode.ToString() == "OK")
-                    {
-                        clubs.ClubPicture = GetResponse.Url;
-                    }
-                    else
-                    {
-                        throw new Exception("Error in Data Fetching");
-                    }
-                }
                 _context.Entry(clubs).State = EntityState.Modified;
 
 
                 try
                 {
                     await _context.SaveChangesAsync();
-                await AssignRole();
+                    await AssignRole();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -232,6 +196,7 @@ namespace Capstone_Event_Management.Controllers
             _context.SaveChanges();
             return 0;
         }
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<Clubs>> PutClubsWithSeats(int id,Clubs clubs)
         {
@@ -288,28 +253,6 @@ namespace Capstone_Event_Management.Controllers
                     return Problem("Entity set 'Email of student or Professor'  is null.");
 
                 }
-                var dataUrl = clubs.ClubPicture;
-                var matchGroups = Regex.Match(dataUrl, @"^data:((?<type>[\w\/]+))?;base64,(?<data>.+)$").Groups;
-                var base64Data = matchGroups["data"].Value;
-                var binData = Convert.FromBase64String(base64Data);
-                Stream stream = new MemoryStream(binData);
-                var uploadParams = new ImageUploadParams()
-                {
-                    File = new FileDescription($"Club_{clubs.ClubEmail}_DisplayPicture", stream),
-                    PublicId = $"Club_{clubs.ClubEmail}_DisplayPicture",
-                    Folder = "Images"
-
-                };
-                var uploadResult = cloudinary.Upload(uploadParams);
-                var GetResponse = cloudinary.GetResource($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
-                if (GetResponse.StatusCode.ToString() == "OK")
-                {
-                    clubs.ClubPicture = GetResponse.Url;
-                }
-                else
-                {
-                    throw new Exception("Error in Data Fetching");
-                }
                 _context.Clubs.Add(clubs);
                 await _context.SaveChangesAsync();
 
@@ -338,7 +281,7 @@ namespace Capstone_Event_Management.Controllers
                 {
                     return NotFound();
                 }
-                var ApiDeleteResponse = cloudinary.DeleteResources($"Images/Club_{clubs.ClubEmail}_DisplayPicture");
+              
                 _context.Clubs.Remove(clubs);
                 await _context.SaveChangesAsync();
 

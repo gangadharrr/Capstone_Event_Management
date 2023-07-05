@@ -111,6 +111,7 @@ namespace Capstone_Event_Management.Controllers
                 {
                     return Problem("Entity set 'ApplicationDbContext.CollegeEvents'  is null.");
                 }
+                collegeEvents.Clubs = await _context.Clubs.FindAsync(collegeEvents.ClubId);
                 _context.CollegeEvents.Add(collegeEvents);
                 await _context.SaveChangesAsync();
 
@@ -140,7 +141,7 @@ namespace Capstone_Event_Management.Controllers
                 {
                     return NotFound();
                 }
-
+               
                 _context.CollegeEvents.Remove(collegeEvents);
                 await _context.SaveChangesAsync();
 

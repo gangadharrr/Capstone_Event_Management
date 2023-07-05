@@ -22,7 +22,7 @@ export function ClubsIndexView() {
                 console.log(error.response.data);
             })
         })
-    }, [data])
+    },[data])
     return (
         spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
             <React.Fragment>
@@ -202,7 +202,6 @@ export function ClubsCreateView() {
             setData([_data])
         }
     }
-
     function readImageFile(eve) {
         if (eve.target.files.length > 0) {
             var uplodedFile = eve.target.files[0]
@@ -300,13 +299,13 @@ export function ClubsCreateView() {
                                     <span className="text-danger">{data.err_price}</span>
                                 </div><br />
                                 <div className="form-group">
-                                    <input type='number' id="availableSeats" className="form-control" placeholder='Available Seats' onChange={onChangeHandle} min="1" required />
+                                    <input type='number' id="availableSeats" className="form-control" placeholder='Available Seats' onChange={onChangeHandle} min="0" required />
                                     <span className="text-danger">{data.err_availableSeats}</span>
                                 </div><br />
                                 <div className="form-group">
-                                    <label style={{ fontWeight: 'bold' }}>Club Display Picture</label>
+                                    <label style={{ fontWeight: 'bold' }}>Club Display Picture</label>&nbsp;
                                     <label htmlFor="image-input">
-                                        <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="50px" width="50px" />
+                                        <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="30px" width="30px" required />
                                     </label>
                                     <input id="image-input" type="file" accept="image/*" onChange={readImageFile} height="10px" width="10px" hidden />
                                     <img className='image-display' src={data.clubPicture} />
@@ -453,7 +452,6 @@ export function ClubsEditView() {
             var uplodedFile = eve.target.files[0]
             var reader = new FileReader();
             reader.onloadend = function (e) {
-                console.log(e);
                 let _data = data[0]
                 _data.clubPicture = e.target.result
                 _data['err_clubPicture'] = ''
@@ -551,7 +549,7 @@ export function ClubsEditView() {
                                     <div className="form-group">
                                         <label style={{ fontWeight: 'bold' }}>Club Display Picture</label>
                                         <label for="image-input">
-                                            <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="50px" width="50px" />
+                                            <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="30px" width="30px" />
                                         </label>
 
                                         <input id="image-input" type="file" accept="image/*" onChange={readImageFile} height="10px" width="10px" hidden />
@@ -937,7 +935,7 @@ export function ClubsPresidentEditView() {
                                     <div className="form-group">
                                         <label style={{ fontWeight: 'bold' }}>Club Display Picture</label>
                                         <label for="image-input">
-                                            <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="50px" width="50px" />
+                                            <img type="image" src="https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Edit-Button_ybm8jc.png" alt="Edit Button" height="30px" width="30px" />
                                         </label>
 
                                         <input id="image-input" type="file" accept="image/*" onChange={readImageFile} height="10px" width="10px" hidden />
