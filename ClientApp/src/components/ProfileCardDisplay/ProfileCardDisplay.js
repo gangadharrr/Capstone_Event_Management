@@ -3,18 +3,28 @@ import { Link,useNavigate } from 'react-router-dom'
 import "./ProfileCardDisplay.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBellSlash,faBell,faEnvelope } from '@fortawesome/free-solid-svg-icons'
-import { Cloudinary } from "@cloudinary/url-gen";
-import { AdvancedImage } from "@cloudinary/react"
 import axios from 'axios'
+import authService from '../api-authorization/AuthorizeService'
+import { LoadingAnimation } from '../LoadingAnimation/LoadingAnimation'
 
 export function ProfileCardDisplay(props) {
-    const cld = new Cloudinary({cloud:{cloudName: 'dujyzevpx'}});
-    const myImg=cld.image(props.imgsrc)
+    const [data,setData]=useState(null)
+    const [spinner,setSpinner]=useState(true)
     const navigate = useNavigate()
+    useEffect(() => {
+      authService.getAccessToken().then(token => {
+        axios.get(`customidentityrole/${props.imgsrc}/1`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((response) => {
+          setData(response.data)
+          setSpinner(false)
+        })
+      })
+    },[])
     return (
     <div className="card" id='profile-card' onClick={()=>navigate(props.btnsrc)} >
     
-        <AdvancedImage cldImg={myImg} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-card-img-top"  />
+      <img src={data?data.profileUrl:'https://res.cloudinary.com/dujyzevpx/image/upload/v1/Images/Account_Logo_jton6z.png?_a=BAJFJtWI0'} className="card-img-top" alt="..."  id="profile-card-img-top"/>
     
       <div className="card-body" id='profile-card-body'>
         <div  id='profile-card-title'>

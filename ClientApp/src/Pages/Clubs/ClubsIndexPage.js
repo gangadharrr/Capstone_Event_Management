@@ -19,7 +19,7 @@ export function ClubsIndexPage() {
   const [hover, setHover] = useState(false)
   const [eventsData, setEventsData] = useState(null);
   const [clubNames, setClubNames] = useState([])
-  const eventsRef = useRef(0);
+  const eventsRef = useRef(null);
   const [data, setData] = useState([{
     name: null,
     description: null,
@@ -45,48 +45,50 @@ export function ClubsIndexPage() {
       axios.get(`clubs/${queryParameters.get('id')}`, {
         headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
       }).then((response) => {
+     
         setData([response.data])
+        axios.get(`clubs`).then((responseClubs) => {
+          let _data = []
+          responseClubs.data.map((val) => {
+            _data[val.clubId] = val.name
+          })
+          setClubNames(_data)
+        })
+        axios.get(`collegeevents`).then((res66) => {
+          let _data = []
+          res66.data.map((val) => {
+            if (val.clubId == queryParameters.get('id')) {
+              _data.push(val)
+            }
+          })
+          setEventsData(_data)
+          setSpinner(false)
+        })
         axios.get(`students/${response.data.president}`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((res1) => {
           let _data = response.data
           _data.presidentName = res1.data.name
           setData([_data])
-          axios.get(`collegeevents`).then((res66) => {
-            let _data = []
-            res66.data.map((val) => {
-              if (val.clubId == queryParameters.get('id')) {
-                _data.push(val)
-              }
-            })
-            setEventsData(_data)
-            axios.get(`professors/${response.data.professorIncharge}`, {
-              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-            }).then((res2) => {
-              let _data = response.data
-              _data.professorInchargeName = res2.data.name
-              setData([_data])
-            })
-            _data = {}
-            data.map((val) => {
-              _data[val.clubId] = val.name
-            })
-            setClubNames(_data)
-            setSpinner(false)
-            const el = eventsRef.current;
-            if (el.offsetWidth < el.scrollWidth) {
-              setIsOverflowingEvents(true);
-            }
-          })
-        }).catch((error) => {
-          console.log(error.response.data);
         })
-
+        axios.get(`professors/${response.data.professorIncharge}`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((res2) => {
+          let _data = response.data
+          _data.professorInchargeName = res2.data.name
+          setData([_data])
+        })
+        const el = eventsRef.current;
+        if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
+          setIsOverflowingEvents(true);
+        }
       }).catch((error) => {
-        console.log(error.response.data);
+        console.log(error);
       })
+    }).catch((error) => {
+      console.log(error);
     })
-  },[spinner])
+  },[])
 
   useEffect(() => {
     authService.getUser().then(user => {
@@ -107,12 +109,12 @@ export function ClubsIndexPage() {
           })
         })
       }).catch((error) => {
-        console.log(error.response.data);
+        console.log(error);
       }).catch((error) => {
-        console.log(error.response.data);
+        console.log(error);
       })
     })
-  }, [spinner])
+  })
   async function ClubRegistration() {
     authService.getUser().then(user => {
       authService.getAccessToken().then(token => {
@@ -397,8 +399,8 @@ export function ClubsIndexPage() {
                 <div className='club-index-page-footer'>
                   <div className='club-index-page-footer-title'><h4>Club Guardians</h4></div>
                   <div className='club-index-page-footer-img'>
-                    <ProfileCardDisplay imgsrc={`Images/${val.professorIncharge}`} title={val.presidentName} role="president" email={val.president} btnsrc={`/members-index-page?id=${val.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
-                    <ProfileCardDisplay imgsrc={`Images/${val.professorIncharge}`} title={val.professorInchargeName} role="president" email={val.professorIncharge} btnsrc={`/members-index-page?id=${val.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
+                    <ProfileCardDisplay imgsrc={`${String(val.president).split('@')[0]}`} title={val.presidentName} role="president" email={val.president} btnsrc={`/members-index-page?id=${val.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
+                    <ProfileCardDisplay imgsrc={`${String(val.professorIncharge).split('@')[0]}`} title={val.professorInchargeName} role="president" email={val.professorIncharge} btnsrc={`/members-index-page?id=${val.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
                   </div>
                 </div>
                 <hr />

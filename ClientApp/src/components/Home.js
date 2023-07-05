@@ -16,8 +16,8 @@ export function Home() {
   const [eventsData, setEventsData] = useState(null);
   const [clubNames, setClubNames] = useState([])
   const [spinner, setSpinner] = useState(true);
-  const eventsRef = useRef(0);
-  const clubsRef = useRef(1);
+  const eventsRef = useRef(null);
+  const clubsRef = useRef(null);
   useEffect(() => {
     axios.get(`collegeevents`).then((response) => {
       setEventsData(response.data)
@@ -30,16 +30,18 @@ export function Home() {
         setClubNames(_data)
         setSpinner(false)
         const el = eventsRef.current;
-        if ( el.offsetWidth < el.scrollWidth) {
+        if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
           setIsOverflowingEvents(true);
         }
         const els = clubsRef.current;
-        if ( els.offsetWidth < els.scrollWidth) {
+        if (eventsRef.current && els.offsetWidth < els.scrollWidth) {
           setIsOverflowingClubs(true);
         }
+     
       })
     })
-  }, [eventsData,clubData]);
+  });
+
   const scrollClubs = (scrollOffset) => {
     clubsRef.current.scrollLeft += scrollOffset;
   };
@@ -64,8 +66,8 @@ export function Home() {
           <Carousel useKeyboardArrows={true} dynamicHeight={true} showThumbs={false} infiniteLoop={true} showArrows={true} autoPlay={true} interval={5000} >
             {eventsData.map((val, index) => (
               <div className="slide" key={index} >
-                <img alt="sample_file" src={val.pictureUrl} key={index} style={{filter:"blur(2px)"}} />
-                <img alt="sample_file" src={val.posterUrl} key={index} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '50%', height: '100%' }} />
+                <img alt="sample_file" src={val.pictureUrl}  style={{filter:"blur(2px)"}} />
+                <img alt="sample_file" src={val.posterUrl} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '50%', height: '100%' }} />
               </div>
             ))}
           </Carousel>
@@ -106,7 +108,7 @@ export function Home() {
             )
           })}
         </div>
-        {isOverflowingCLubs ? <button className='nav-buttons' onClick={() => scrollClubs(200)}>&#5171;</button> : null}
+        {isOverflowingCLubs ? <button className='nav-buttons' onClick={() => scrollClubs(200)}>&#5171;</button> :null}
       </div>
     </React.Fragment>
 

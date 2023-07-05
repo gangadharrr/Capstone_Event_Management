@@ -6,6 +6,8 @@ import authService from './AuthorizeService';
 import { ApplicationPaths } from './ApiAuthorizationConstants';
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react"
+import axios from 'axios';
+import { toHtml } from '@fortawesome/fontawesome-svg-core';
 
 export class LoginMenu extends Component {
   constructor(props) {
@@ -14,7 +16,8 @@ export class LoginMenu extends Component {
     this.state = {
       isAuthenticated: false,
       userName: null,
-      dropdownOpen: false
+      dropdownOpen: false,
+      userDetails: null
     };
   }
 
@@ -52,12 +55,25 @@ export class LoginMenu extends Component {
   toggle = () => { this.setState({ dropdownOpen: !this.state.dropdownOpen }) }
   authenticatedView(userName, profilePath, logoutPath, logoutState) {
     const cld = new Cloudinary({ cloud: { cloudName: 'dujyzevpx' } });
-    const myImg = cld.image(`Images/${userName}`);
+      const myImg = cld.image(`Images/${userName}`);
+      authService.getAccessToken().then(token => {
+        
+        axios.get(`customidentityrole/${userName}/1`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((response) => {
+          this.setState({
+            isAuthenticated:this.state.isAuthenticated,
+            userName:this.state.userName,
+            dropdownOpen:this.state.dropdownOpen,
+            userDetails:response.data
+          });
+        })
+      })
 
 
     return (<Fragment>
       <Dropdown isOpen={this.state.dropdownOpen} toggle={() => { this.toggle() }} direction="down" menuRole="listbox" >
-        <DropdownToggle color='dark'><AdvancedImage cldImg={myImg} style={{ height: "39px", width: "39px", borderRadius: "50%" }} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav" /> </DropdownToggle>
+        <DropdownToggle color='dark'><img src={this.state.userDetails?this.state.userDetails.profileUrl:"https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} style={{ height: "39px", width: "39px", borderRadius: "50%" }}  id="profile-picture-nav" /> </DropdownToggle>
         <DropdownMenu dark>
           <DropdownItem ><NavLink replace tag={Link} className="text-light" to={profilePath} style={{ color: "white" }}>{userName}</NavLink></DropdownItem>
           <DropdownItem > <NavLink replace tag={Link} className="text-light" to={logoutPath} state={logoutState}>Logout</NavLink></DropdownItem>
