@@ -35,7 +35,7 @@ export function CollegeEventsIndexView() {
   return (
     spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
       <React.Fragment>
-        <h1>Index</h1>
+        <h1>College Events</h1>
         <p style={{ textAlign: 'right' }}>
           <Link className='btn btn-primary' to="/college-events-create-view">+ Create New</Link>&nbsp;
         </p>
@@ -220,7 +220,6 @@ export function CollegeEventsCreateView() {
       _data['err_' + event.target.id] = ''
       setData([_data])
     }
-    console.log(data[0])
   }
   function readImageFile(eve) {
     if (eve.target.files.length > 0) {

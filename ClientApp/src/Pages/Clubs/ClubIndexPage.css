@@ -81,6 +81,11 @@
     height: 100%;
     width: 100%;
 }
+#event-display-card
+{
+    width: 30%;
+    margin: 0% 1% 1% 1%;
+}
 .club-index-page-content{
     line-height: 200%;
 }

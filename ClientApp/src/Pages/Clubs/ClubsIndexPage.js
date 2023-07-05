@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import "./ClubIndexPage.css"
-import ReactDOM from 'react-dom'
-import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBellSlash, faBell, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { ProfileCardDisplay } from "../../components/ProfileCardDisplay/ProfileCardDisplay"
+import { EventCardDisplay } from "../../components/EventCardDisplay/EventCardDisplay"
 import authService from '../../components/api-authorization/AuthorizeService'
-import { Cloudinary } from "@cloudinary/url-gen";
-import { AdvancedImage } from "@cloudinary/react"
-import { fill } from "@cloudinary/url-gen/actions/resize";
-import { Alert } from 'reactstrap';
-import { ApplicationPaths, LoginActions } from '../../components/api-authorization/ApiAuthorizationConstants';
+import { ApplicationPaths } from '../../components/api-authorization/ApiAuthorizationConstants';
 export function ClubsIndexPage() {
   const [notifications, setNotifications] = useState(false)
   const location = useLocation()
+  const [isOverflowingEvents, setIsOverflowingEvents] = useState(false);
   const [spinner, setSpinner] = useState(true);
   const queryParameters = new URLSearchParams(location.search)
   const navigate = useNavigate()
-  const [hover,setHover]=useState(false)
+  const [hover, setHover] = useState(false)
+  const [eventsData, setEventsData] = useState(null);
+  const [clubNames, setClubNames] = useState([])
+  const eventsRef = useRef(0);
   const [data, setData] = useState([{
     name: null,
     description: null,
@@ -39,6 +39,55 @@ export function ClubsIndexPage() {
     err_clubPicture: null
   }])
   const [registered, setRegistered] = useState(false)
+
+  useEffect(() => {
+    authService.getAccessToken().then(token => {
+      axios.get(`clubs/${queryParameters.get('id')}`, {
+        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+      }).then((response) => {
+        setData([response.data])
+        axios.get(`students/${response.data.president}`, {
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((res1) => {
+          let _data = response.data
+          _data.presidentName = res1.data.name
+          setData([_data])
+          axios.get(`collegeevents`).then((res66) => {
+            let _data = []
+            res66.data.map((val) => {
+              if (val.clubId == queryParameters.get('id')) {
+                _data.push(val)
+              }
+            })
+            setEventsData(_data)
+            axios.get(`professors/${response.data.professorIncharge}`, {
+              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }).then((res2) => {
+              let _data = response.data
+              _data.professorInchargeName = res2.data.name
+              setData([_data])
+            })
+            _data = {}
+            data.map((val) => {
+              _data[val.clubId] = val.name
+            })
+            setClubNames(_data)
+            setSpinner(false)
+            const el = eventsRef.current;
+            if (el.offsetWidth < el.scrollWidth) {
+              setIsOverflowingEvents(true);
+            }
+          })
+        }).catch((error) => {
+          console.log(error.response.data);
+        })
+
+      }).catch((error) => {
+        console.log(error.response.data);
+      })
+    })
+  },[spinner])
+
   useEffect(() => {
     authService.getUser().then(user => {
       authService.getAccessToken().then(token => {
@@ -57,36 +106,13 @@ export function ClubsIndexPage() {
             setNotifications(response.data)
           })
         })
-      })
-    })
-  },[])
-  useEffect(() => {
-    authService.getAccessToken().then(token => {
-      axios.get(`clubs/${queryParameters.get('id')}`, {
-        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-      }).then((response) => {
-        setData([response.data])
-        axios.get(`students/${response.data.president}`, {
-          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        }).then((res1) => {
-          let _data = response.data
-          _data.presidentName = res1.data.name
-          setData([_data])
-        })
-        axios.get(`professors/${response.data.professorIncharge}`, {
-          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        }).then((res2) => {
-          let _data = response.data
-          _data.professorInchargeName = res2.data.name
-          setData([_data])
-        })
-        setSpinner(false)
-
+      }).catch((error) => {
+        console.log(error.response.data);
       }).catch((error) => {
         console.log(error.response.data);
       })
     })
-  }, [])
+  }, [spinner])
   async function ClubRegistration() {
     authService.getUser().then(user => {
       authService.getAccessToken().then(token => {
@@ -151,33 +177,33 @@ export function ClubsIndexPage() {
                       professorIncharge: data[0].professorIncharge,
                       clubEmail: data[0].clubEmail.toLowerCase(),
                       price: parseFloat(data[0].price),
-                      availableSeats: parseInt(data[0].availableSeats)-1,
+                      availableSeats: parseInt(data[0].availableSeats) - 1,
                       clubPicture: data[0].clubPicture,
                       students: {
-                          name: 'string',
-                          email: 'string',
-                          batch: 'string',
-                          section: 'string',
-                          rollNumber: 0,
-                          normalizedDegree: 'string',
-                          normalizedBranch: 'string'
+                        name: 'string',
+                        email: 'string',
+                        batch: 'string',
+                        section: 'string',
+                        rollNumber: 0,
+                        normalizedDegree: 'string',
+                        normalizedBranch: 'string'
                       },
                       professors: {
-                          professorId: 'string',
-                          name: 'string',
-                          email: 'string',
-                          designation: 'string',
-                          normalizedDegree: 'string',
-                          normalizedBranch: 'string'
+                        professorId: 'string',
+                        name: 'string',
+                        email: 'string',
+                        designation: 'string',
+                        normalizedDegree: 'string',
+                        normalizedBranch: 'string'
                       }
-                  },
+                    },
                       { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                  ).then((res4) => {
+                    ).then((res4) => {
 
                       setRegistered(true)
                     })
                   })
-                    
+
                 }).catch((error) => {
                   console.log(error.response.data);
                 })
@@ -194,17 +220,16 @@ export function ClubsIndexPage() {
       navigate(ApplicationPaths.Login + `?returnUrl=${window.location.href}`)
     })
   }
-  async function clubUnRegistration()
-  {
+  async function clubUnRegistration() {
     authService.getUser().then(user => {
       authService.getAccessToken().then(token => {
         axios.get(`customidentityrole/${user.name}/1`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((res) => {
           axios.delete(`/clubmembers/${queryParameters.get('id')}/${res.data.email}`,
-          {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-          }
+            {
+              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }
           ).then((res1) => {
             axios.get(`clubs/${queryParameters.get('id')}`, {
               headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
@@ -217,117 +242,121 @@ export function ClubsIndexPage() {
                 professorIncharge: data[0].professorIncharge,
                 clubEmail: data[0].clubEmail.toLowerCase(),
                 price: parseFloat(data[0].price),
-                availableSeats: parseInt(data[0].availableSeats)+1,
+                availableSeats: parseInt(data[0].availableSeats) + 1,
                 clubPicture: data[0].clubPicture,
                 students: {
-                    name: 'string',
-                    email: 'string',
-                    batch: 'string',
-                    section: 'string',
-                    rollNumber: 0,
-                    normalizedDegree: 'string',
-                    normalizedBranch: 'string'
+                  name: 'string',
+                  email: 'string',
+                  batch: 'string',
+                  section: 'string',
+                  rollNumber: 0,
+                  normalizedDegree: 'string',
+                  normalizedBranch: 'string'
                 },
                 professors: {
-                    professorId: 'string',
-                    name: 'string',
-                    email: 'string',
-                    designation: 'string',
-                    normalizedDegree: 'string',
-                    normalizedBranch: 'string'
+                  professorId: 'string',
+                  name: 'string',
+                  email: 'string',
+                  designation: 'string',
+                  normalizedDegree: 'string',
+                  normalizedBranch: 'string'
                 }
-            },
+              },
                 { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-            ).then((res4) => {
+              ).then((res4) => {
 
                 setRegistered(false)
               })
             })
           })
         })
-        })
-      }).catch((error) => {
-          console.log(error.response.data); 
-        })
+      })
+    }).catch((error) => {
+      console.log(error.response.data);
+    })
   }
-  async function clubSubscribe()
-  {
+  async function clubSubscribe() {
     authService.getUser().then(user => {
       authService.getAccessToken().then(token => {
         axios.get(`customidentityrole/${user.name}/1`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((res) => {
           console.log(res.data)
-          axios.post("subscriptions",  
-              {
-                "id": 0,
-                "clubId": queryParameters.get('id'),
-                "email": res.data.email,
-                "dateTimeNow": "2023-07-03T12:22:00.113Z",
-                "clubs": {
-                  "clubId": 0,
+          axios.post("subscriptions",
+            {
+              "id": 0,
+              "clubId": queryParameters.get('id'),
+              "email": res.data.email,
+              "dateTimeNow": "2023-07-03T12:22:00.113Z",
+              "clubs": {
+                "clubId": 0,
+                "name": "string",
+                "description": "string",
+                "president": "string",
+                "professorIncharge": "string",
+                "clubEmail": "string",
+                "price": 0,
+                "availableSeats": 0,
+                "clubPicture": "string",
+                "students": {
                   "name": "string",
-                  "description": "string",
-                  "president": "string",
-                  "professorIncharge": "string",
-                  "clubEmail": "string",
-                  "price": 0,
-                  "availableSeats": 0,
-                  "clubPicture": "string",
-                  "students": {
-                    "name": "string",
-                    "email": "string",
-                    "batch": "string",
-                    "section": "string",
-                    "rollNumber": 0,
-                    "normalizedDegree": "string",
-                    "normalizedBranch": "string"
-                  },
-                  "professors": {
-                    "professorId": "string",
-                    "name": "string",
-                    "email": "string",
-                    "designation": "string",
-                    "normalizedDegree": "string",
-                    "normalizedBranch": "string"
-                  }
+                  "email": "string",
+                  "batch": "string",
+                  "section": "string",
+                  "rollNumber": 0,
+                  "normalizedDegree": "string",
+                  "normalizedBranch": "string"
+                },
+                "professors": {
+                  "professorId": "string",
+                  "name": "string",
+                  "email": "string",
+                  "designation": "string",
+                  "normalizedDegree": "string",
+                  "normalizedBranch": "string"
                 }
               }
-          ,{
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-          }
+            }
+            , {
+              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }
           ).then((res1) => {
             setNotifications(true)
           })
         })
-        })
-      }).catch((error) => {
-          console.log(error.response.data); 
-        })
+      })
+    }).catch((error) => {
+      console.log(error.response.data);
+    })
   }
-  async function clubUnSubscribe()
-  {
+  async function clubUnSubscribe() {
     authService.getUser().then(user => {
       authService.getAccessToken().then(token => {
         axios.get(`customidentityrole/${user.name}/1`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((res) => {
           axios.delete(`/subscriptions/${queryParameters.get('id')}/${res.data.email}`,
-          {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-          }
+            {
+              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }
           ).then((res1) => {
 
             setNotifications(false)
           })
         })
-        })
-      }).catch((error) => {
-          console.log(error.response.data); 
+      })
+    }).catch((error) => {
+      console.log(error.response.data);
     })
   }
-
-  return (
+  const scrollEvents = (scrollOffset) => {
+    eventsRef.current.scrollLeft += scrollOffset;
+  };
+  const DateFormatter = (date) => {
+    var d = new Date(date);
+    return d.toDateString();
+  }
+  return (spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
     <React.Fragment>
       {
         data.map((val) => {
@@ -346,16 +375,16 @@ export function ClubsIndexPage() {
                     <p className='club-index-page-email'><FontAwesomeIcon icon={faEnvelope} /> {val.clubEmail}</p>
                   </div>
                   <div id="button-area">
-                    {val.availableSeats==0
-                    ?<button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
-                    :registered
-                      ?hover ?<button className='btn btn-danger' onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} onClick={clubUnRegistration} id='register-button'>Unregister</button>:<button className='btn btn-outline-success' onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} onClick={clubUnRegistration} id='register-button'>Registered</button>
-                      : <button className='btn btn-primary' id='register-button'  onClick={ClubRegistration}>Join {val.price == 0 ? "free" : `for ₹${val.price}`} </button>
-                    
+                    {val.availableSeats == 0
+                      ? <button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
+                      : registered
+                        ? hover ? <button className='btn btn-danger' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={clubUnRegistration} id='register-button'>Unregister</button> : <button className='btn btn-outline-success' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={clubUnRegistration} id='register-button'>Registered</button>
+                        : <button className='btn btn-primary' id='register-button' onClick={ClubRegistration}>Join {val.price == 0 ? "free" : `for ₹${val.price}`} </button>
+
                     }
-                    {notifications 
-                      ?<button className='btn btn-outline-success' id='notification-button' onClick={clubUnSubscribe}><FontAwesomeIcon icon={notifications ?faBellSlash:faBell} /></button>
-                     :<button className='btn btn-success' id='notification-button' onClick={clubSubscribe}><FontAwesomeIcon icon={notifications ?faBellSlash:faBell} /></button> 
+                    {notifications
+                      ? <button className='btn btn-outline-success' id='notification-button' onClick={clubUnSubscribe}><FontAwesomeIcon icon={notifications ? faBellSlash : faBell} /></button>
+                      : <button className='btn btn-success' id='notification-button' onClick={clubSubscribe}><FontAwesomeIcon icon={notifications ? faBellSlash : faBell} /></button>
                     }
                   </div>
                 </div>
@@ -373,6 +402,28 @@ export function ClubsIndexPage() {
                   </div>
                 </div>
                 <hr />
+                <h4 style={{ textAlign: 'center' }}>Club Events</h4>
+                <br />
+                <div className='scroll-content' >
+                  {isOverflowingEvents ? <button className='nav-buttons' onClick={() => scrollEvents(-200)}>&#5176;</button> : null}
+                  <div className="rowDisplay" id='events-row-display' ref={eventsRef}>
+                    {spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> : eventsData.map((item) => {
+                      return (
+                        <div className="col-sm-3" id='event-display-card' key={item.eventId}>
+                          <EventCardDisplay
+                            imgsrc={item.pictureUrl}
+                            title={item.name}
+                            modeOfEvent={item.modeOfEvent}
+                            clubName={clubNames[item.clubId]}
+                            lastDate={"Last Date : " + DateFormatter(item.lastDayToRegister)}
+                            resourcePerson={item.resourcePerson}
+                            btnsrc={`/club-home?id=${item.clubId}`} />
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {isOverflowingEvents ? <button className='nav-buttons' onClick={() => scrollEvents(200)}>&#5171;</button> : null}
+                </div>
               </div>
             </div>
           )

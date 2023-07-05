@@ -1,22 +1,29 @@
-.scroll-content{
+.scroll-content {
     display: flex;
     flex-direction: row;
     align-items: center;
-    column-gap: 1%;
     width: 100%;
 }
+
 ::-webkit-scrollbar {
     display: none;
 }
-.rowDisplay
-{
-    padding: 1% 1% 1% 1%;
+
+.rowDisplay {
     max-height: 500px;
-    min-height: 300px;
-   width: 100%;
-   scroll-behavior: smooth;
+    width: 100%;
+    scroll-behavior: smooth;
+    margin: 0% 1% 0% 1%;
+    box-shadow: inset 20px 0px 6px -20px #ccc,inset  -20px 0px 6px -20px #ccc;
 }
-.nav-buttons{
+
+#carousal-content-display{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+.nav-buttons {
     height: 40px;
     width: 40px;
     background-color: rgb(0, 107, 194);
@@ -24,8 +31,16 @@
     border-radius: 25px;
     font-weight: bolder;
     border: 0px;
-
+    
 }
-.nav-buttons:hover{
-    background-color:  rgb(0, 140, 255);
+
+.nav-buttons:hover {
+    background-color: rgb(0, 140, 255);
+}
+
+#club-card {
+    margin: 0% 1% 1% 1%;
+}
+#event-card{
+    margin: 0% 1% 1% 1%;
 }

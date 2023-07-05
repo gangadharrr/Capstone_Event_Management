@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Capstone_Event_Management.Controllers
 {
-    [Authorize]
+    
     [Route("[controller]")]
     [ApiController]
     public class ClubMembersController : ControllerBase
@@ -69,6 +69,7 @@ namespace Capstone_Event_Management.Controllers
 
         // PUT: api/ClubMembers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutClubMembers(int id, ClubMembers clubMembers)
         {
@@ -100,6 +101,7 @@ namespace Capstone_Event_Management.Controllers
 
         // POST: api/ClubMembers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ClubMembers>> PostClubMembers(ClubMembers clubMembers)
         {
@@ -116,6 +118,7 @@ namespace Capstone_Event_Management.Controllers
         }
 
         // DELETE: api/ClubMembers/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClubMembers(int id)
         {
