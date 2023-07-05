@@ -69,7 +69,7 @@ namespace Capstone_Event_Management.Controllers
                 {
                     return BadRequest();
                 }
-
+                collegeEvents.Clubs = await _context.Clubs.FindAsync(collegeEvents.ClubId);
                 _context.Entry(collegeEvents).State = EntityState.Modified;
 
                 try
