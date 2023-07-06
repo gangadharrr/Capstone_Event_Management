@@ -15,10 +15,8 @@ export function CollegeEventsIndexPage() {
     const navigate = useNavigate()
     const queryParameters = new URLSearchParams(location.search)
     const [eventsData, setEventsData] = useState([]);
-    const [studentData, setStudentData] = useState(null);
-    const [professorData, setProfessorData] = useState(null);
     const [hover, setHover] = useState(false)
-    const [roles, setRoles] = useState(null)
+    const [roles, setRoles] = useState([])
     const [spinner, setSpinner] = useState(true);
     const [registered, setRegistered] = useState(false)
     useEffect(() => {
@@ -59,6 +57,7 @@ export function CollegeEventsIndexPage() {
                         setRegistered(response1.data)
                     })
                 })
+                
             }).catch((error) => {
                 console.log(error);
             })
@@ -221,7 +220,7 @@ export function CollegeEventsIndexPage() {
                             "posterUrl": eventsData[0].posterUrl,
                             "accessLevel": eventsData[0].accessLevel,
                             "venue": eventsData[0].venue,
-                            "availableSeats": parseInt(eventsData[0].availableSeats) - 1,
+                            "availableSeats": parseInt(eventsData[0].availableSeats) + 1,
                             "clubs": {
                                 "clubId": 0,
                                 "name": "string",
@@ -259,7 +258,7 @@ export function CollegeEventsIndexPage() {
                 })
             })
         }).catch((error) => {
-            console.log(error.response.data);
+            console.log(error);
         })
     }
     const DateFormatter = (date) => {
@@ -325,8 +324,8 @@ export function CollegeEventsIndexPage() {
                                     <h5 style={{ textAlign: "center" }}>Event Coordinators</h5>
                                     <br/>
                                     <div className="event-index-page-footer-members">
-                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.president).split('@')[0]}`} title={val.presidentName} role="president" email={val.clubs.president} btnsrc={`/members-index-page?id=${val.clubs.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
-                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.professorIncharge).split('@')[0]}`} title={val.professorName} role="president" email={val.clubs.professorIncharge} btnsrc={`/members-index-page?id=${val.clubs.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
+                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.president).split('@')[0]}`} title={val.presidentName} role="President" email={val.clubs.president} btnsrc={`/members-index-page?id=${val.clubs.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
+                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.professorIncharge).split('@')[0]}`} title={val.professorName} role="Professor" email={val.clubs.professorIncharge} btnsrc={`/members-index-page?id=${val.clubs.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
                                     </div>                                 
                                 </div>
                                 <hr />

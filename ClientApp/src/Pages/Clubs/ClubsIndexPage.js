@@ -327,9 +327,11 @@ export function ClubsIndexPage() {
             setNotifications(true)
           })
         })
+      }).catch((error) => {
+        navigate(ApplicationPaths.Login + `?returnUrl=${window.location.href}`)
       })
     }).catch((error) => {
-      console.log(error.response.data);
+      navigate(ApplicationPaths.Login + `?returnUrl=${window.location.href}`)
     })
   }
   async function clubUnSubscribe() {
@@ -400,8 +402,8 @@ export function ClubsIndexPage() {
                 <div className='club-index-page-footer'>
                   <div className='club-index-page-footer-title'><h4>Club Guardians</h4></div>
                   <div className='club-index-page-footer-img'>
-                    <ProfileCardDisplay imgsrc={`${String(val.president).split('@')[0]}`} title={val.presidentName} role="president" email={val.president} btnsrc={`/members-index-page?id=${val.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
-                    <ProfileCardDisplay imgsrc={`${String(val.professorIncharge).split('@')[0]}`} title={val.professorInchargeName} role="president" email={val.professorIncharge} btnsrc={`/members-index-page?id=${val.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
+                    <ProfileCardDisplay imgsrc={`${String(val.president).split('@')[0]}`} title={val.presidentName} role="President" email={val.president} btnsrc={`/members-index-page?id=${val.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
+                    <ProfileCardDisplay imgsrc={`${String(val.professorIncharge).split('@')[0]}`} title={val.professorInchargeName} role="Professor" email={val.professorIncharge} btnsrc={`/members-index-page?id=${val.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
                   </div>
                 </div>
                 <hr />

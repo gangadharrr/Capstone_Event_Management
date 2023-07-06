@@ -13,8 +13,8 @@ import { useNavigate } from 'react-router-dom';
 
 export function Home() {
   const navigate = useNavigate()
-  const [isOverflowingEvents, setIsOverflowingEvents] = useState(false);
-  const [isOverflowingCLubs, setIsOverflowingClubs] = useState(false);
+  const [isOverflowingEvents, setIsOverflowingEvents] = useState(true);
+  const [isOverflowingCLubs, setIsOverflowingClubs] = useState(true);
   const [clubData, setClubData] = useState(null);
   const [eventsData, setEventsData] = useState(null);
   const [clubNames, setClubNames] = useState([])
@@ -34,7 +34,6 @@ export function Home() {
         setClubNames(_data)
         authService.getUser().then((user) => {
           axios.get(`customidentityrole/details/${user.name}/1`).then((responseRole) => {
-            console.log(responseRole.data)
             setRoles(responseRole.data)
           })
         }).catch((error) => {
@@ -42,17 +41,23 @@ export function Home() {
         })
         setSpinner(false)
         const el = eventsRef.current;
-        if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
+        if (eventsRef.current && el.offsetWidth > el.scrollWidth) {
+          setIsOverflowingEvents(false);
+        }
+        else{
           setIsOverflowingEvents(true);
         }
         const els = clubsRef.current;
-        if (eventsRef.current && els.offsetWidth < els.scrollWidth) {
-          setIsOverflowingClubs(true);
+        if (eventsRef.current && els.offsetWidth > els.scrollWidth) {
+          setIsOverflowingClubs(false);
+        }
+        else{
+          setIsOverflowingEvents(true);
         }
      
       })
     })
-  })
+  },[])
 
   const scrollClubs = (scrollOffset) => {
     clubsRef.current.scrollLeft += scrollOffset;

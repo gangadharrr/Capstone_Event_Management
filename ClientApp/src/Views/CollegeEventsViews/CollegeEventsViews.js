@@ -962,7 +962,7 @@ export function CollegeEventsPresidentView() {
                               axios.delete(`collegeevents/${user.name}/${val.eventId}`, {
                                 headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
                               }).then((response) => {
-                                navigate("/college-events-index-view");
+                                navigate("/college-events-president-view");
                               }).catch((error) => {
                                 console.log(error)
                               })
@@ -1173,7 +1173,7 @@ export function CollegeEventsPresidentCreateView() {
           },
             { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
           ).then((response) => {
-            navigate('/college-events-index-view')
+            navigate('/college-events-president-view')
           }
           ).catch((error) => {
             console.log(error.response.data);
@@ -1500,7 +1500,7 @@ export function CollegeEventsPresidentEditView() {
           },
             { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
           ).then((response) => {
-            navigate('/college-events-index-view')
+            navigate('/college-events-president-view')
           }
           ).catch((error) => {
             console.log(error.response.data);

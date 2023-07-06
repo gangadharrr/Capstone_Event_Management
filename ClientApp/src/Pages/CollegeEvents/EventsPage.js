@@ -20,16 +20,14 @@ export function EventsPage() {
                     _data[val.clubId] = val.name
                 })
                 setClubNames(_data)
+                setSpinner(false)
                 authService.getUser().then((user) => {
                     axios.get(`customidentityrole/details/${user.name}/1`).then((responseRole) => {
-                        console.log(responseRole.data)
                         setRoles(responseRole.data)
                     })
                 }).catch((error) => {
                     console.log(error);
                 })
-                setSpinner(false)
-
             })
         })
     },[])
