@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './MembersIndexPage.css'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBellSlash, faBell, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate, useLocation } from 'react-router-dom'
 import authService from '../../components/api-authorization/AuthorizeService';
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react"

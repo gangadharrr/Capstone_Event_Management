@@ -7,6 +7,7 @@ import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./Home.css"
 import { Position } from '@cloudinary/url-gen/qualifiers';
+import authService from './api-authorization/AuthorizeService';
 
 
 export function Home() {
@@ -15,12 +16,13 @@ export function Home() {
   const [clubData, setClubData] = useState(null);
   const [eventsData, setEventsData] = useState(null);
   const [clubNames, setClubNames] = useState([])
+  const [roles, setRoles] = useState([])
   const [spinner, setSpinner] = useState(true);
   const eventsRef = useRef(null);
   const clubsRef = useRef(null);
   useEffect(() => {
-    axios.get(`collegeevents`).then((response) => {
-      setEventsData(response.data)
+    axios.get(`collegeevents`).then((res) => {
+      setEventsData(res.data)
       axios.get(`clubs`).then((response) => {
         setClubData(response.data)
         let _data = {}
@@ -28,6 +30,14 @@ export function Home() {
           _data[val.clubId] = val.name
         })
         setClubNames(_data)
+        authService.getUser().then((user) => {
+          axios.get(`customidentityrole/details/${user.name}/1`).then((responseRole) => {
+            console.log(responseRole.data)
+            setRoles(responseRole.data)
+          })
+        }).catch((error) => {
+          console.log(error);
+        })
         setSpinner(false)
         const el = eventsRef.current;
         if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
@@ -40,7 +50,7 @@ export function Home() {
      
       })
     })
-  });
+  },[])
 
   const scrollClubs = (scrollOffset) => {
     clubsRef.current.scrollLeft += scrollOffset;
@@ -52,11 +62,6 @@ export function Home() {
     var d = new Date(date);
     return d.toDateString();
   }
-  const images = [
-    "https://res.cloudinary.com/ifeomaimoh/image/upload/v1652345767/demo_image2.jpg",
-    "https://res.cloudinary.com/ifeomaimoh/image/upload/v1652366604/demo_image5.jpg",
-    "https://res.cloudinary.com/ifeomaimoh/image/upload/v1652345874/demo_image1.jpg",
-  ];
   return (spinner ? <LoadingAnimation type='fallinglines' text="Loading..." /> :
     <React.Fragment>
       <h3>Recent Updates</h3>
@@ -82,13 +87,14 @@ export function Home() {
             return (
               <div  id='event-card' key={item.eventId}>
                 <EventCardDisplay
+                  ActiveColor={roles.includes(item.accessLevel)?"rgb(0, 255, 0)":"rgb(255, 0, 0)"}
                   imgsrc={item.pictureUrl}
                   title={item.name}
                   modeOfEvent={item.modeOfEvent}
                   clubName={clubNames[item.clubId]}
                   lastDate={"Last Date : " + DateFormatter(item.lastDayToRegister)}
                   resourcePerson={item.resourcePerson}
-                  btnsrc={`/club-home?id=${item.clubId}`} />
+                  btnsrc={`/college-events-index-page?id=${item.eventId}`} />
               </div>
             )
           })}

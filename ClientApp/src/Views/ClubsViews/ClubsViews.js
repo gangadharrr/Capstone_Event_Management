@@ -91,7 +91,8 @@ export function ClubsIndexView() {
                                                     })
                                                 }
                                             }}
-                                        >Delete</button>
+                                        >Delete</button> |&nbsp;
+                                        <Link className='btn btn-dark' to={"/club-members-index-view?id=" + val.clubId}>Club Members</Link>
                                     </td>
                                 </tr>
                             )

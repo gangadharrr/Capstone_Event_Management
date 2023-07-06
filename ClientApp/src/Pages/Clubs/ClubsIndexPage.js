@@ -17,8 +17,9 @@ export function ClubsIndexPage() {
   const queryParameters = new URLSearchParams(location.search)
   const navigate = useNavigate()
   const [hover, setHover] = useState(false)
-  const [eventsData, setEventsData] = useState(null);
+  const [eventsData, setEventsData] = useState([]);
   const [clubNames, setClubNames] = useState([])
+  const [roles , setRoles] = useState([])
   const eventsRef = useRef(null);
   const [data, setData] = useState([{
     name: null,
@@ -57,7 +58,7 @@ export function ClubsIndexPage() {
         axios.get(`collegeevents`).then((res66) => {
           let _data = []
           res66.data.map((val) => {
-            if (val.clubId == queryParameters.get('id')) {
+            if (Number(val.clubId) === Number(queryParameters.get('id'))) {
               _data.push(val)
             }
           })
@@ -96,6 +97,11 @@ export function ClubsIndexPage() {
         axios.get(`customidentityrole/${user.name}/${queryParameters.get('id')}`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((res) => {
+          axios.get(`customidentityrole/details/${user.name}/1`, {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+          }).then((res1) => {
+            setRoles(res1.data)
+          })
           axios.get(`clubmembers/${res.data.email}/${queryParameters.get('id')}`, {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
           }
@@ -377,11 +383,11 @@ export function ClubsIndexPage() {
                     <p className='club-index-page-email'><FontAwesomeIcon icon={faEnvelope} /> {val.clubEmail}</p>
                   </div>
                   <div id="button-area">
-                    {val.availableSeats == 0
+                    {val.availableSeats === 0
                       ? <button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
                       : registered
                         ? hover ? <button className='btn btn-danger' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={clubUnRegistration} id='register-button'>Unregister</button> : <button className='btn btn-outline-success' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={clubUnRegistration} id='register-button'>Registered</button>
-                        : <button className='btn btn-primary' id='register-button' onClick={ClubRegistration}>Join {val.price == 0 ? "free" : `for ₹${val.price}`} </button>
+                        : <button className='btn btn-primary' id='register-button' onClick={ClubRegistration}>Join {val.price === 0 ? "free" : `for ₹${val.price}`} </button>
 
                     }
                     {notifications
@@ -413,13 +419,14 @@ export function ClubsIndexPage() {
                       return (
                         <div className="col-sm-3" id='event-display-card' key={item.eventId}>
                           <EventCardDisplay
+                            ActiveColor={roles.includes(item.accessLevel) ? "rgb(0, 255, 0)" : "rgb(255, 0, 0)"}
                             imgsrc={item.pictureUrl}
                             title={item.name}
                             modeOfEvent={item.modeOfEvent}
                             clubName={clubNames[item.clubId]}
                             lastDate={"Last Date : " + DateFormatter(item.lastDayToRegister)}
                             resourcePerson={item.resourcePerson}
-                            btnsrc={`/club-home?id=${item.clubId}`} />
+                            btnsrc={`/college-events-index-page?id=${item.eventId}`} />
                         </div>
                       )
                     })}

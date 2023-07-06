@@ -18,7 +18,11 @@ export function ProfileCardDisplay(props) {
         }).then((response) => {
           setData(response.data)
           setSpinner(false)
+        }).catch((error) => {
+          console.log(error)
         })
+      }).catch((error) => {
+        console.log(error)
       })
     },[])
     return (

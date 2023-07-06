@@ -71,7 +71,12 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account
                 if (_professor != null)
                 {
                     var role = _context.Roles.Find("Professor");
-                    var defaultrole = _roleManager.FindByNameAsync(role.Name).Result;
+                    var defaultrole1 = _roleManager.FindByNameAsync(role.Name).Result;
+                    if (defaultrole1 != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole1.Name);
+                    }
+                    var defaultrole = _roleManager.FindByNameAsync("Member").Result;
                     if (defaultrole != null)
                     {
                         IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole.Name);
@@ -79,7 +84,12 @@ namespace Capstone_Event_Management.Areas.Identity.Pages.Account
                 }
                 else if (_student != null)
                 {
-                    var defaultrole = _roleManager.FindByNameAsync("Student").Result;
+                    var defaultrole1 = _roleManager.FindByNameAsync("Student").Result;
+                    if (defaultrole1 != null)
+                    {
+                        IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole1.Name);
+                    }
+                    var defaultrole = _roleManager.FindByNameAsync("Member").Result;
                     if (defaultrole != null)
                     {
                         IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole.Name);

@@ -137,6 +137,7 @@ namespace Capstone_Event_Management.Controllers
 
             return NoContent();
         }
+        [Authorize]
         [HttpDelete("{clubId}/{email}")]
         public async Task<IActionResult> DeleteClubMembers(int clubId, string email)
         {

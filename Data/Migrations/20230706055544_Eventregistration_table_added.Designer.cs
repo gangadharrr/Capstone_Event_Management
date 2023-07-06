@@ -4,6 +4,7 @@ using Capstone_Event_Management.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Capstone_Event_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230706055544_Eventregistration_table_added")]
+    partial class Eventregistration_table_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,6 +249,9 @@ namespace Capstone_Event_Management.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateTimeNow")
                         .HasColumnType("datetime2");
 
@@ -253,12 +259,9 @@ namespace Capstone_Event_Management.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("ClubId");
 
                     b.ToTable("EventRegistrations");
                 });
@@ -688,7 +691,7 @@ namespace Capstone_Event_Management.Migrations
                 {
                     b.HasOne("Capstone_Event_Management.Models.CollegeEvents", "CollegeEvents")
                         .WithMany()
-                        .HasForeignKey("EventId")
+                        .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

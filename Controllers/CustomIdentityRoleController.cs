@@ -9,7 +9,6 @@ using System.Security.Claims;
 
 namespace Capstone_Event_Management.Controllers
 {
-    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class CustomIdentityRoleController : ControllerBase
@@ -58,6 +57,7 @@ namespace Capstone_Event_Management.Controllers
                 return BadRequest();
             }
         }
+        [Authorize]
         [HttpGet("{id}/{details}")]
         public async Task<ActionResult<ApplicationUser>> GetDetails(string id,int details)
         {

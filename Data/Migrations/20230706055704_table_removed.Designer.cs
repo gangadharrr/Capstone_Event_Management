@@ -4,6 +4,7 @@ using Capstone_Event_Management.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Capstone_Event_Management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230706055704_table_removed")]
+    partial class table_removed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,31 +239,6 @@ namespace Capstone_Event_Management.Migrations
                     b.HasIndex("ClubId");
 
                     b.ToTable("CollegeEvents");
-                });
-
-            modelBuilder.Entity("Capstone_Event_Management.Models.EventRegistrations", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTimeNow")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("EventRegistrations");
                 });
 
             modelBuilder.Entity("Capstone_Event_Management.Models.Professors", b =>
@@ -682,17 +660,6 @@ namespace Capstone_Event_Management.Migrations
                         .IsRequired();
 
                     b.Navigation("Clubs");
-                });
-
-            modelBuilder.Entity("Capstone_Event_Management.Models.EventRegistrations", b =>
-                {
-                    b.HasOne("Capstone_Event_Management.Models.CollegeEvents", "CollegeEvents")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CollegeEvents");
                 });
 
             modelBuilder.Entity("Capstone_Event_Management.Models.Subscriptions", b =>
