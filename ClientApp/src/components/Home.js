@@ -8,9 +8,11 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./Home.css"
 import { Position } from '@cloudinary/url-gen/qualifiers';
 import authService from './api-authorization/AuthorizeService';
+import { useNavigate } from 'react-router-dom';
 
 
 export function Home() {
+  const navigate = useNavigate()
   const [isOverflowingEvents, setIsOverflowingEvents] = useState(false);
   const [isOverflowingCLubs, setIsOverflowingClubs] = useState(false);
   const [clubData, setClubData] = useState(null);
@@ -70,9 +72,9 @@ export function Home() {
         <div className="box" style={{ height: '100%', width: '45%' }} >
           <Carousel useKeyboardArrows={true} dynamicHeight={true} showThumbs={false} infiniteLoop={true} showArrows={true} autoPlay={true} interval={5000} >
             {eventsData.map((val, index) => (
-              <div className="slide" key={index} >
+              <div className="slide" key={index} onClick={() => navigate(`/college-events-index-page?id=${val.eventId}`)} >
                 <img alt="sample_file" src={val.pictureUrl}  style={{filter:"blur(2px)"}} />
-                <img alt="sample_file" src={val.posterUrl} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '50%', height: '100%' }} />
+                <img alt="sample_file" src={val.posterUrl}  style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '50%', height: '100%' }} />
               </div>
             ))}
           </Carousel>

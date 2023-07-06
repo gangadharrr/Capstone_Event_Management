@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import "./CollegeEventsIndexPage.css"
+import { Link } from 'react-router-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -17,7 +18,7 @@ export function CollegeEventsIndexPage() {
     const queryParameters = new URLSearchParams(location.search)
     const [eventsData, setEventsData] = useState([]);
     const [hover, setHover] = useState(false)
-    const [roles, setRoles] = useState([])
+    const [roles, setRoles] = useState(null)
     const [spinner, setSpinner] = useState(true);
     const [registered, setRegistered] = useState(false)
     useEffect(() => {
@@ -264,13 +265,16 @@ export function CollegeEventsIndexPage() {
                                     <h1 className='event-index-page-title'>"{val.name}"</h1>
                                     <h5>An Event Organized by</h5>
                                     <h2 className='event-index-page-title'>{val.clubName}</h2>
-                                    {!roles.includes(val.accessLevel) ? <button className='btn btn-outline-danger' id='register-button' disabled >No Access</button>
+                                    {roles === null 
+                                        ? <Link className='btn btn-outline-primary' to={ApplicationPaths.Login} id='register-button'  >Login to Register</Link>
                                         :
-                                        val.availableSeats === 0 || val.lastDayToRegister - new Date() < 0 || !roles.includes(val.accessLevel)
-                                            ? <button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
-                                            : registered
-                                                ? hover ? <button className='btn btn-danger' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventUnRegistration} id='register-button'>Unregister</button> : <button className='btn btn-outline-success' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventRegistration} id='register-button'>Registered</button>
-                                                : <button className='btn btn-primary' id='register-button' onClick={eventRegistration}>Register for {val.price === 0 ? "free" : `₹${val.price}`} </button>
+                                        !roles.includes(val.accessLevel) ? <button className='btn btn-outline-danger' id='register-button' disabled >No Access</button>
+                                            :
+                                            val.availableSeats === 0 || val.lastDayToRegister - new Date() < 0 || !roles.includes(val.accessLevel)
+                                                ? <button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
+                                                : registered
+                                                    ? hover ? <button className='btn btn-danger' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventUnRegistration} id='register-button'>Unregister</button> : <button className='btn btn-outline-success' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventRegistration} id='register-button'>Registered</button>
+                                                    : <button className='btn btn-primary' id='register-button' onClick={eventRegistration}>Register for {val.price === 0 ? "free" : `₹${val.price}`} </button>
 
                                     }
                                 </div>
