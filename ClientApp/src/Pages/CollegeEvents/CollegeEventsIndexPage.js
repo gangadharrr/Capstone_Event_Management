@@ -3,11 +3,9 @@ import axios from 'axios'
 import "./CollegeEventsIndexPage.css"
 import { Link } from 'react-router-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ProfileCardDisplay } from "../../components/ProfileCardDisplay/ProfileCardDisplay";
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBellSlash, faBell, faEnvelope } from '@fortawesome/free-solid-svg-icons'
-import { ProfileCardDisplay } from "../../components/ProfileCardDisplay/ProfileCardDisplay"
-import { EventCardDisplay } from "../../components/EventCardDisplay/EventCardDisplay"
+import { ColoredCircle } from "../../components/ColoredCircle/ColoredCircle"
 import authService from '../../components/api-authorization/AuthorizeService'
 import { ApplicationPaths } from '../../components/api-authorization/ApiAuthorizationConstants';
 
@@ -17,6 +15,8 @@ export function CollegeEventsIndexPage() {
     const navigate = useNavigate()
     const queryParameters = new URLSearchParams(location.search)
     const [eventsData, setEventsData] = useState([]);
+    const [studentData, setStudentData] = useState(null);
+    const [professorData, setProfessorData] = useState(null);
     const [hover, setHover] = useState(false)
     const [roles, setRoles] = useState(null)
     const [spinner, setSpinner] = useState(true);
@@ -26,12 +26,25 @@ export function CollegeEventsIndexPage() {
             setEventsData([res.data])
             axios.get(`clubs/${res.data.clubId}`).then((response) => {
                 let _data = res.data
-                _data['clubName'] = response.data.name
+                _data['clubs'] = response.data
                 setEventsData([_data])
+                // axios.get(`students/${response.data.president}`, {
+                // }).then((res1) => {
+                //     let _data=eventsData
+                //     _data['presidentName'] = res1.data.name
+                //     setEventsData([_data])
+                //     axios.get(`professors/${response.data.professorIncharge}`, {
+                //     }).then((res2) => {
+                //         let _data=eventsData
+                //         _data['professorName'] = res2.data.name
+                //         setEventsData([_data])
+                //     })
+                // })
                 setSpinner(false)
             })
         })
     }, [])
+
     useEffect(() => {
         authService.getUser().then((user) => {
             authService.getAccessToken().then(token => {
@@ -251,6 +264,10 @@ export function CollegeEventsIndexPage() {
             console.log(error.response.data);
         })
     }
+    const DateFormatter = (date) => {
+        var d = new Date(date);
+        return d.toDateString() + " " + d.toLocaleTimeString();
+    }
     return (spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
         <React.Fragment>
             {
@@ -258,25 +275,65 @@ export function CollegeEventsIndexPage() {
                     return (spinner ? <LoadingAnimation type='puff' text="Loading..." /> :
                         <div className="event-index-page">
                             <div className='event-index-page-img'>
+
                                 <img src={val.pictureUrl} className="event-img-top" alt="..." />
                             </div>
                             <div className="event-index-page-body">
                                 <div className="event-index-page-head">
+                                    <div className="event-index-page-head-circle" >
+                                        <b style={{ color: "#999999" }}>{val.accessLevel == 'Student' ? 'Students' : 'Everyone'}</b>
+                                        <ColoredCircle color={"#FF0000"} />
+                                    </div>
                                     <h1 className='event-index-page-title'>"{val.name}"</h1>
                                     <h5>An Event Organized by</h5>
-                                    <h2 className='event-index-page-title'>{val.clubName}</h2>
-                                    {roles === null 
+                                    <h2 className='event-index-page-title'>{val.clubs.name}</h2>
+                                    {roles === null
                                         ? <Link className='btn btn-outline-primary' to={ApplicationPaths.Login} id='register-button'  >Login to Register</Link>
-                                        :
-                                        !roles.includes(val.accessLevel) ? <button className='btn btn-outline-danger' id='register-button' disabled >No Access</button>
-                                            :
-                                            val.availableSeats === 0 || val.lastDayToRegister - new Date() < 0 || !roles.includes(val.accessLevel)
+                                        : !roles.includes(val.accessLevel) ? <button className='btn btn-outline-danger' id='register-button' disabled >No Access</button>
+                                            : val.availableSeats === 0 || val.lastDayToRegister - new Date() < 0 || !roles.includes(val.accessLevel)
                                                 ? <button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
                                                 : registered
                                                     ? hover ? <button className='btn btn-danger' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventUnRegistration} id='register-button'>Unregister</button> : <button className='btn btn-outline-success' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventRegistration} id='register-button'>Registered</button>
                                                     : <button className='btn btn-primary' id='register-button' onClick={eventRegistration}>Register for {val.price === 0 ? "free" : `₹${val.price}`} </button>
-
                                     }
+                                </div>
+                                <hr />
+                                <div className="event-index-page-details">
+                                    <div className='row'>
+                                        <div className="col-6">
+                                            <h5>Resource Person</h5>
+                                            <p>{val.resourcePerson}</p>
+                                            <h5>Mode of Event</h5>
+                                            <p>{val.modeOfEvent}</p>
+                                            <h5>Start Date</h5>
+                                            <p>{DateFormatter(val.startDateTimeOfEvent)}</p>
+                                            <h5>End Date</h5>
+                                            <p>{DateFormatter(val.endDateTimeOfEvent)}</p>
+                                        </div>
+                                        <div className="col-6">
+                                            <h5>Club Members Price</h5>
+                                            <p>{val.price === 0 ? "Free" : `₹${val.price}`}</p>
+                                            <h5>Seats Remaining</h5>
+                                            <p>{val.availableSeats}</p>
+                                            <h5>Last Day to Register</h5>
+                                            <p>{DateFormatter(val.lastDayToRegister)}</p>
+                                            <h5>Location</h5>
+                                            <p>{val.venue}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div className='event-index-page-footer'>
+                                    <h5 style={{ textAlign: "center" }}>Event Coordinators</h5>
+{/*                         
+                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.president).split('@')[0]}`} title={val.presidentName} role="president" email={val.clubs.president} btnsrc={`/members-index-page?id=${val.clubs.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
+                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.professorIncharge).split('@')[0]}`} title={val.professorName} role="president" email={val.clubs.professorIncharge} btnsrc={`/members-index-page?id=${val.clubs.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} /> */}
+
+                                    
+                                </div>
+                                <hr />
+                                <div className="event-img-bottom-container">
+                                    <img src={val.posterUrl} className="event-img-bottom" alt="..." />
                                 </div>
                                 <hr />
                             </div>

@@ -27,3 +27,19 @@
     text-align: center;
     width: 100%;
 }
+.event-index-page-head-circle
+{
+    width: 100%;
+    text-align: end;
+}
+.event-img-bottom-container
+{
+    text-align: center;
+}
+.event-img-bottom
+{
+    height: 100%;
+    width: 100%;
+    max-height: 50%;
+    max-width: 50%;
+}
