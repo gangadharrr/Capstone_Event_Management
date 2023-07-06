@@ -27,20 +27,18 @@ export function CollegeEventsIndexPage() {
             axios.get(`clubs/${res.data.clubId}`).then((response) => {
                 let _data = res.data
                 _data['clubs'] = response.data
-                setEventsData([_data])
-                // axios.get(`students/${response.data.president}`, {
-                // }).then((res1) => {
-                //     let _data=eventsData
-                //     _data['presidentName'] = res1.data.name
-                //     setEventsData([_data])
-                //     axios.get(`professors/${response.data.professorIncharge}`, {
-                //     }).then((res2) => {
-                //         let _data=eventsData
-                //         _data['professorName'] = res2.data.name
-                //         setEventsData([_data])
-                //     })
-                // })
-                setSpinner(false)
+                // setEventsData([_data])
+                axios.get(`students/${response.data.president}`, {
+                }).then((res1) => {
+                    _data['presidentName'] = res1.data.name
+                    // setEventsData([_data])
+                    axios.get(`professors/${response.data.professorIncharge}`, {
+                    }).then((res2) => {
+                        _data['professorName'] = res2.data.name
+                        setEventsData([_data])
+                        setSpinner(false)
+                    })
+                })
             })
         })
     }, [])
@@ -282,7 +280,7 @@ export function CollegeEventsIndexPage() {
                                 <div className="event-index-page-head">
                                     <div className="event-index-page-head-circle" >
                                         <b style={{ color: "#999999" }}>{val.accessLevel == 'Student' ? 'Students' : 'Everyone'}</b>
-                                        <ColoredCircle color={"#FF0000"} />
+                                        <ColoredCircle color={roles.includes(val.accessLevel)?"#00FF00":"#FF0000"} />
                                     </div>
                                     <h1 className='event-index-page-title'>"{val.name}"</h1>
                                     <h5>An Event Organized by</h5>
@@ -325,11 +323,11 @@ export function CollegeEventsIndexPage() {
                                 <hr />
                                 <div className='event-index-page-footer'>
                                     <h5 style={{ textAlign: "center" }}>Event Coordinators</h5>
-{/*                         
+                                    <br/>
+                                    <div className="event-index-page-footer-members">
                                         <ProfileCardDisplay imgsrc={`${String(val.clubs.president).split('@')[0]}`} title={val.presidentName} role="president" email={val.clubs.president} btnsrc={`/members-index-page?id=${val.clubs.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
-                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.professorIncharge).split('@')[0]}`} title={val.professorName} role="president" email={val.clubs.professorIncharge} btnsrc={`/members-index-page?id=${val.clubs.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} /> */}
-
-                                    
+                                        <ProfileCardDisplay imgsrc={`${String(val.clubs.professorIncharge).split('@')[0]}`} title={val.professorName} role="president" email={val.clubs.professorIncharge} btnsrc={`/members-index-page?id=${val.clubs.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
+                                    </div>                                 
                                 </div>
                                 <hr />
                                 <div className="event-img-bottom-container">

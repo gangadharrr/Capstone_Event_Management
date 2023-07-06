@@ -43,3 +43,9 @@
     max-height: 50%;
     max-width: 50%;
 }
+.event-index-page-footer-members
+{
+    display: flex;
+    justify-content: center;
+    column-gap: 2%;
+}
