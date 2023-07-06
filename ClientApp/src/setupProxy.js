@@ -13,6 +13,7 @@ const context = [
   "/clubmembers",
   "/subscriptions",
   "/collegeevents",
+  "/eventregistrations",
   "/_configuration",
   "/.well-known",
   "/Identity",

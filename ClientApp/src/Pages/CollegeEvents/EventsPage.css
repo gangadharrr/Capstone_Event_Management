@@ -1,0 +1,7 @@
+.events-page
+{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    row-gap: 5%;
+    column-gap: 1%;
+}

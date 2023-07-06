@@ -108,6 +108,7 @@ namespace Capstone_Event_Management.Controllers
           {
               return Problem("Entity set 'ApplicationDbContext.EventRegistrations'  is null.");
           }
+            eventRegistrations.CollegeEvents = await _context.CollegeEvents.FindAsync(eventRegistrations.EventId);
             _context.EventRegistrations.Add(eventRegistrations);
             await _context.SaveChangesAsync();
 

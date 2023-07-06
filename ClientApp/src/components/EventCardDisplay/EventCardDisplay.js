@@ -7,7 +7,7 @@ export function EventCardDisplay(props) {
     const navigate = useNavigate()
     return (
         <div className="card" id='event-card' onClick={() => navigate(props.btnsrc)} >
-            <div style={{width: '75%',textAlign: 'end'}}>
+            <div style={{width: '80%',textAlign: 'end'}}>
 
             <ColoredCircle color={props.ActiveColor}/>
             </div>

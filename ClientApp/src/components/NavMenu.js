@@ -95,7 +95,7 @@ export function NavMenu() {
                 </NavItem>
                 ]
               }
-              else if (roles.includes('President') || roles.includes('Professor')) {
+              else if (roles.includes('President')) {
                 _rows = [
                   <NavItem key={1}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/clubs-president-view">Clubs Activity</NavLink>
@@ -105,7 +105,7 @@ export function NavMenu() {
                  </NavItem>
                 ]
               }
-              else if (roles.includes('Students')) {
+              else if (roles.includes('Student')) {
                 _rows = [
                   <NavItem key={1}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/events-page" >Events</NavLink>
@@ -113,6 +113,16 @@ export function NavMenu() {
                   <NavItem key={2}>
                     <NavLink tag={Link} id='nav-item' className="text-light" to="/clubs-page">Clubs</NavLink>
                   </NavItem>
+                ]
+              }
+              else {
+                 _rows = [
+                  <NavItem key={1}>
+                  <NavLink tag={Link} id='nav-item' className="text-light" to="/events-page" >Events</NavLink>
+                </NavItem>,
+                <NavItem key={2}>
+                  <NavLink tag={Link} id='nav-item' className="text-light" to="/clubs-page">Clubs</NavLink>
+                </NavItem>
                 ]
               }
             

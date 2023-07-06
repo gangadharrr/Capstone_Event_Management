@@ -36,9 +36,7 @@
     padding: 3% 5% 5% 5%;
     width: 100%;
 }
-.club-index-page-title{
-    background-color: #cccccc00;
-}
+
 #button-area{
     display: flex;
     flex-direction: row;

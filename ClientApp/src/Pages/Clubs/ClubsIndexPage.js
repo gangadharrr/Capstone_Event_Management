@@ -19,7 +19,7 @@ export function ClubsIndexPage() {
   const [hover, setHover] = useState(false)
   const [eventsData, setEventsData] = useState([]);
   const [clubNames, setClubNames] = useState([])
-  const [roles , setRoles] = useState([])
+  const [roles, setRoles] = useState([])
   const eventsRef = useRef(null);
   const [data, setData] = useState([{
     name: null,
@@ -46,7 +46,7 @@ export function ClubsIndexPage() {
       axios.get(`clubs/${queryParameters.get('id')}`, {
         headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
       }).then((response) => {
-     
+
         setData([response.data])
         axios.get(`clubs`).then((responseClubs) => {
           let _data = []
@@ -89,7 +89,7 @@ export function ClubsIndexPage() {
     }).catch((error) => {
       console.log(error);
     })
-  },[])
+  }, [])
 
   useEffect(() => {
     authService.getUser().then(user => {
@@ -174,42 +174,40 @@ export function ClubsIndexPage() {
                 }
               },
                 { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }).then((res2) => {
-                  axios.get(`clubs/${queryParameters.get('id')}`, {
-                    headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-                  }).then((dataset) => {
-                    axios.put(`clubs/${queryParameters.get('id')}`, {
-                      clubId: data[0].clubId,
-                      name: data[0].name,
-                      description: data[0].description,
-                      president: data[0].president,
-                      professorIncharge: data[0].professorIncharge,
-                      clubEmail: data[0].clubEmail.toLowerCase(),
-                      price: parseFloat(data[0].price),
-                      availableSeats: parseInt(data[0].availableSeats) - 1,
-                      clubPicture: data[0].clubPicture,
-                      students: {
-                        name: 'string',
-                        email: 'string',
-                        batch: 'string',
-                        section: 'string',
-                        rollNumber: 0,
-                        normalizedDegree: 'string',
-                        normalizedBranch: 'string'
-                      },
-                      professors: {
-                        professorId: 'string',
-                        name: 'string',
-                        email: 'string',
-                        designation: 'string',
-                        normalizedDegree: 'string',
-                        normalizedBranch: 'string'
-                      }
-                    },
-                      { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                    ).then((res4) => {
 
-                      setRegistered(true)
-                    })
+                  axios.put(`clubs/${queryParameters.get('id')}`, {
+                    clubId: data[0].clubId,
+                    name: data[0].name,
+                    description: data[0].description,
+                    president: data[0].president,
+                    professorIncharge: data[0].professorIncharge,
+                    clubEmail: data[0].clubEmail.toLowerCase(),
+                    price: parseFloat(data[0].price),
+                    availableSeats: parseInt(data[0].availableSeats) - 1,
+                    clubPicture: data[0].clubPicture,
+                    students: {
+                      name: 'string',
+                      email: 'string',
+                      batch: 'string',
+                      section: 'string',
+                      rollNumber: 0,
+                      normalizedDegree: 'string',
+                      normalizedBranch: 'string'
+                    },
+                    professors: {
+                      professorId: 'string',
+                      name: 'string',
+                      email: 'string',
+                      designation: 'string',
+                      normalizedDegree: 'string',
+                      normalizedBranch: 'string'
+                    }
+                  },
+                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                  ).then((res4) => {
+
+                    setRegistered(true)
+
                   })
 
                 }).catch((error) => {
@@ -218,7 +216,7 @@ export function ClubsIndexPage() {
             })
           }
           else {
-            alert("User is not a student")
+            alert("User is not a Student")
           }
         })
       }).catch((error) => {
@@ -239,42 +237,40 @@ export function ClubsIndexPage() {
               headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
             }
           ).then((res1) => {
-            axios.get(`clubs/${queryParameters.get('id')}`, {
-              headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-            }).then((dataset) => {
-              axios.put(`clubs/${queryParameters.get('id')}`, {
-                clubId: data[0].clubId,
-                name: data[0].name,
-                description: data[0].description,
-                president: data[0].president,
-                professorIncharge: data[0].professorIncharge,
-                clubEmail: data[0].clubEmail.toLowerCase(),
-                price: parseFloat(data[0].price),
-                availableSeats: parseInt(data[0].availableSeats) + 1,
-                clubPicture: data[0].clubPicture,
-                students: {
-                  name: 'string',
-                  email: 'string',
-                  batch: 'string',
-                  section: 'string',
-                  rollNumber: 0,
-                  normalizedDegree: 'string',
-                  normalizedBranch: 'string'
-                },
-                professors: {
-                  professorId: 'string',
-                  name: 'string',
-                  email: 'string',
-                  designation: 'string',
-                  normalizedDegree: 'string',
-                  normalizedBranch: 'string'
-                }
-              },
-                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-              ).then((res4) => {
 
-                setRegistered(false)
-              })
+            axios.put(`clubs/${queryParameters.get('id')}`, {
+              clubId: data[0].clubId,
+              name: data[0].name,
+              description: data[0].description,
+              president: data[0].president,
+              professorIncharge: data[0].professorIncharge,
+              clubEmail: data[0].clubEmail.toLowerCase(),
+              price: parseFloat(data[0].price),
+              availableSeats: parseInt(data[0].availableSeats) + 1,
+              clubPicture: data[0].clubPicture,
+              students: {
+                name: 'string',
+                email: 'string',
+                batch: 'string',
+                section: 'string',
+                rollNumber: 0,
+                normalizedDegree: 'string',
+                normalizedBranch: 'string'
+              },
+              professors: {
+                professorId: 'string',
+                name: 'string',
+                email: 'string',
+                designation: 'string',
+                normalizedDegree: 'string',
+                normalizedBranch: 'string'
+              }
+            },
+              { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+            ).then((res4) => {
+
+              setRegistered(false)
+
             })
           })
         })
@@ -289,7 +285,6 @@ export function ClubsIndexPage() {
         axios.get(`customidentityrole/${user.name}/1`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((res) => {
-          console.log(res.data)
           axios.post("subscriptions",
             {
               "id": 0,

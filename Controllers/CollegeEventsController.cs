@@ -96,7 +96,37 @@ namespace Capstone_Event_Management.Controllers
                 return StatusCode(401, "UnAuthorized Access");
             }    
         }
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCollegeEventsWithSeats(int id, CollegeEvents collegeEvents)
+        {
+            
+            if (id != collegeEvents.EventId)
+            {
+                return BadRequest();
+            }
+            collegeEvents.Clubs = await _context.Clubs.FindAsync(collegeEvents.ClubId);
+            _context.Entry(collegeEvents).State = EntityState.Modified;
 
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CollegeEventsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+            
+        }
         // POST: api/CollegeEvents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
