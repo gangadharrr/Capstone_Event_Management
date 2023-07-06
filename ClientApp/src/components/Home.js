@@ -52,7 +52,7 @@ export function Home() {
      
       })
     })
-  },[])
+  })
 
   const scrollClubs = (scrollOffset) => {
     clubsRef.current.scrollLeft += scrollOffset;

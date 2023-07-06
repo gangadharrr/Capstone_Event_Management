@@ -1,6 +1,7 @@
 .clubs-page{
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: auto auto auto ;
     row-gap: 5%;
+    grid-auto-flow: row;
     column-gap: 1%;
 }

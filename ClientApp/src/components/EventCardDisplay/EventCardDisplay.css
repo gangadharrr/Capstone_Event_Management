@@ -18,7 +18,10 @@
    #event-card-title{
        text-align: center;
    }
-
+.event-card-dot{
+    width: 75%;
+    text-align: end;
+}
     #card-button
     {
         font-size:small;
