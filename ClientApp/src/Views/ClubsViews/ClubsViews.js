@@ -92,7 +92,7 @@ export function ClubsIndexView() {
                                                 }
                                             }}
                                         >Delete</button> |&nbsp;
-                                        <Link className='btn btn-dark' to={"/club-members-index-view?id=" + val.clubId}>Club Members</Link>
+                                        <Link className='btn btn-dark' to={"/club-members-index-view?id=" + val.clubId+"&returnUrl=/clubs-index-view"}>Club Members</Link>
                                     </td>
                                 </tr>
                             )
@@ -728,7 +728,7 @@ export function ClubsPresidentView() {
                                     <td>
                                         <Link className='btn btn-primary' to={"/clubs-president-edit-view?id=" + val.clubId} >Edit</Link> |&nbsp;
                                         <Link className='btn btn-warning' to={"/clubs-president-details-view?id=" + val.clubId}>Details</Link> |&nbsp; 
-                                        <Link className='btn btn-dark' to={"/club-members-index-view?id=" + val.clubId}>Club Members</Link> 
+                                        <Link className='btn btn-dark' to={"/club-members-index-view?id=" + val.clubId+"&returnUrl=/clubs-president-view"}>Club Members</Link> 
                                     </td>
                                 </tr>
                             )

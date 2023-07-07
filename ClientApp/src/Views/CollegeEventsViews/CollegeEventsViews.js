@@ -100,7 +100,8 @@ export function CollegeEventsIndexView() {
                           })
                         }
                       }}
-                    >Delete</button>
+                    >Delete</button> |&nbsp;
+                    <Link className='btn btn-dark' to={"/event-registrations-index-view?id=" + val.eventId+"&returnUrl=/college-events-index-view"}>Event Registrations</Link>
                   </td>
                 </tr>
               )
@@ -970,7 +971,8 @@ export function CollegeEventsPresidentView() {
                           })
                         }
                       }}
-                    >Delete</button>
+                    >Delete</button> |&nbsp;
+                    <Link className='btn btn-dark' to={"/event-registrations-index-view?id=" + val.eventId+"&returnUrl=/college-events-president-view"}>Event Registrations</Link>
                   </td>
                 </tr>:<React.Fragment></React.Fragment>
               )

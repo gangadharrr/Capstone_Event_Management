@@ -33,7 +33,15 @@ namespace Capstone_Event_Management.Controllers
             }
             return await _context.EventRegistrations.ToListAsync();
         }
-
+        [HttpGet("{eventId}/{events}/{idd}")]
+        public async Task<ActionResult<IEnumerable<EventRegistrations>>> GetEventRegistrations(int eventId, int idd,string events)
+        {
+            if (_context.EventRegistrations == null)
+            {
+                return NotFound();
+            }
+            return await _context.EventRegistrations.Where(e=>e.EventId==eventId).ToListAsync();
+        }
         // GET: api/EventRegistrations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EventRegistrations>> GetEventRegistrations(int id)

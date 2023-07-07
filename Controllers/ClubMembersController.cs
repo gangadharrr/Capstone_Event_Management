@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Capstone_Event_Management.Controllers
 {
-    
+
     [Route("[controller]")]
     [ApiController]
     public class ClubMembersController : ControllerBase
@@ -27,11 +27,20 @@ namespace Capstone_Event_Management.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClubMembers>>> GetClubMembers()
         {
-          if (_context.ClubMembers == null)
-          {
-              return NotFound();
-          }
+            if (_context.ClubMembers == null)
+            {
+                return NotFound();
+            }
             return await _context.ClubMembers.ToListAsync();
+        }
+        [HttpGet("{clubId}/{clubs}/{idd}")]
+        public async Task<ActionResult<IEnumerable<ClubMembers>>> GetClubMembers(int clubId,string clubs,int idd)
+        {
+            if (_context.ClubMembers == null)
+            {
+                return NotFound();
+            }
+            return await _context.ClubMembers.Where(e=>e.ClubId==clubId).ToListAsync();
         }
 
         // GET: api/ClubMembers/5

@@ -4,18 +4,18 @@ import authService from '../../components/api-authorization/AuthorizeService';
 import { Link, Route, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
+import {CSVLink} from 'react-csv'
 
 export function ClubMembersIndexView() {
     const navigate = useNavigate()
     const location = useLocation()
     const queryParameters = new URLSearchParams(location.search)
     const [data, setData] = useState([])
-    const [clubMemberData, setClubMemberData] = useState(null)
     const [spinner, setSpinner] = useState(true);
     useEffect(() => {
         authService.getAccessToken().then(token => {
             var _data=[]
-            axios.get(`clubmembers`, { 
+            axios.get(`clubmembers/${queryParameters.get('id')}/clubs/1`, { 
                 headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
             }).then((res) => {
                 res.data.map((val) => {
@@ -38,7 +38,8 @@ export function ClubMembersIndexView() {
             <React.Fragment>
                 <h1>Club Members</h1>
                 <p style={{ textAlign: 'right' }}>
-                    <Link className='btn btn-primary' to="/clubs-president-view">Back to List</Link>&nbsp;
+                    <Link className='btn btn-primary' to={queryParameters.get('returnUrl')}>Back to List</Link> &nbsp;
+                    <CSVLink className='btn btn-success' data={data} filename='Club-Members.csv'>Export to CSV</CSVLink>
                 </p>
                 <table className="table">
                     <thead>
