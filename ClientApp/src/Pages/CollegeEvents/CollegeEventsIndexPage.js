@@ -8,6 +8,7 @@ import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnima
 import { ColoredCircle } from "../../components/ColoredCircle/ColoredCircle"
 import authService from '../../components/api-authorization/AuthorizeService'
 import { ApplicationPaths } from '../../components/api-authorization/ApiAuthorizationConstants';
+import { EventPresidentUpdates, EventUpdatesMessage } from "../../components/EventUpdates/EventUpdates";
 
 
 export function CollegeEventsIndexPage() {
@@ -19,6 +20,9 @@ export function CollegeEventsIndexPage() {
     const [roles, setRoles] = useState([])
     const [spinner, setSpinner] = useState(true);
     const [registered, setRegistered] = useState(false)
+    const [eventUpdates, setEventUpdates] = useState(false)
+    const [eventUpdatesData, setEventUpdatesData] = useState([])
+    const [MemberUser, setMemberUser] = useState({ userName: null, email: null })
     useEffect(() => {
         axios.get(`collegeevents/${queryParameters.get('id')}`).then((res) => {
             setEventsData([res.data])
@@ -44,12 +48,16 @@ export function CollegeEventsIndexPage() {
     useEffect(() => {
         authService.getUser().then((user) => {
             authService.getAccessToken().then(token => {
-                axios.get(`customidentityrole/details/${user.name}/1`).then((responseRole) => {
+                axios.get(`customidentityrole/details/${user.name}/1`, {
+                    headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                }
+                ).then((responseRole) => {
                     setRoles(responseRole.data)
                 })
                 axios.get(`customidentityrole/${user.name}/${queryParameters.get('id')}`, {
                     headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
                 }).then((res) => {
+                    setMemberUser(res.data)
                     axios.get(`eventregistrations/${res.data.email}/${queryParameters.get('id')}`, {
                         headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
                     }
@@ -57,14 +65,24 @@ export function CollegeEventsIndexPage() {
                         setRegistered(response1.data)
                     })
                 })
-                
+
             }).catch((error) => {
                 console.log(error);
             })
         }).catch((error) => {
             console.log(error);
         })
-    })
+    }, [])
+    useEffect(() => {
+        authService.getAccessToken().then(token => {
+            axios.get(`eventupdates`, {
+                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }).then((res) => {
+                setEventUpdates(true)
+                setEventUpdatesData(res.data)
+            })
+        })
+    }, [eventUpdates])
     async function eventRegistration() {
         authService.getUser().then(user => {
             authService.getAccessToken().then(token => {
@@ -279,7 +297,7 @@ export function CollegeEventsIndexPage() {
                                 <div className="event-index-page-head">
                                     <div className="event-index-page-head-circle" >
                                         <b style={{ color: "#999999" }}>{val.accessLevel == 'Student' ? 'Students' : 'Everyone'}</b>
-                                        <ColoredCircle color={roles.includes(val.accessLevel)?"#00FF00":"#FF0000"} />
+                                        <ColoredCircle color={roles.includes(val.accessLevel) ? "#00FF00" : "#FF0000"} />
                                     </div>
                                     <h1 className='event-index-page-title'>"{val.name}"</h1>
                                     <h5>An Event Organized by</h5>
@@ -322,17 +340,33 @@ export function CollegeEventsIndexPage() {
                                 <hr />
                                 <div className='event-index-page-footer'>
                                     <h5 style={{ textAlign: "center" }}>Event Coordinators</h5>
-                                    <br/>
+                                    <br />
                                     <div className="event-index-page-footer-members">
                                         <ProfileCardDisplay imgsrc={`${String(val.clubs.president).split('@')[0]}`} title={val.presidentName} role="President" email={val.clubs.president} btnsrc={`/members-index-page?id=${val.clubs.president}&member=students&returnUrl=${window.location.pathname}${window.location.search}`} />
                                         <ProfileCardDisplay imgsrc={`${String(val.clubs.professorIncharge).split('@')[0]}`} title={val.professorName} role="Professor" email={val.clubs.professorIncharge} btnsrc={`/members-index-page?id=${val.clubs.professorIncharge}&member=professors&returnUrl=${window.location.pathname}${window.location.search}`} />
-                                    </div>                                 
+                                    </div>
                                 </div>
                                 <hr />
                                 <div className="event-img-bottom-container">
+                                    <h5>Event Poster</h5>
                                     <img src={val.posterUrl} className="event-img-bottom" alt="..." />
                                 </div>
                                 <hr />
+                                <div className="event-index-page-footer-updates">
+                                    <h5>Event Updates</h5>
+                                    <br />
+                                    {
+                                        roles.includes("President") ?
+                                            <div className="event-index-page-footer-event-updates">
+                                                <EventPresidentUpdates name={MemberUser.userName} email={MemberUser.email} />
+                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage obj={item} /> })}
+                                            </div>
+                                            : <div className="event-index-page-footer-event-updates">
+                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage obj={item} /> })}
+                                            </div>
+                                    }
+                                    {!eventUpdates && !roles.includes("President") ? <p id="no-updates">There are No Updates for this event</p> : <React.Fragment></React.Fragment>}
+                                </div>
                             </div>
                         </div>
                     )

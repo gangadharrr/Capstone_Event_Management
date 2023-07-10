@@ -32,7 +32,7 @@ export function EventRegistrationsIndexView() {
             <h1>Event Registrations</h1>
 
             <p style={{ textAlign: 'right' }}>
-                <Link className='btn btn-primary' to={queryParameters.get('returnUrl')} >Back to List</Link> &nbsp;
+                <button className='btn btn-primary' onClick={()=>navigate(-1)} >Back to List</button> &nbsp;
                 <CSVLink className='btn btn-success' data={eventRegistrationData} filename='Event-Registrations.csv'>Export to CSV</CSVLink>
             </p>
             <table class="table">

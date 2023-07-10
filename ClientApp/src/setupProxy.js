@@ -14,6 +14,7 @@ const context = [
   "/subscriptions",
   "/collegeevents",
   "/eventregistrations",
+  "/eventupdates",
   "/_configuration",
   "/.well-known",
   "/Identity",

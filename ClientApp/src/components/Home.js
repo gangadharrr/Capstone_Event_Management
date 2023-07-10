@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LoadingAnimation } from './LoadingAnimation/LoadingAnimation';
 import { CardDisplay } from './CardDisplay/CardDisplay';
 import { EventCardDisplay } from './EventCardDisplay/EventCardDisplay';
@@ -6,7 +6,6 @@ import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./Home.css"
-import { Position } from '@cloudinary/url-gen/qualifiers';
 import authService from './api-authorization/AuthorizeService';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,6 +29,7 @@ export function Home() {
         let _data = {}
         response.data.map((val) => {
           _data[val.clubId] = val.name
+          return null
         })
         setClubNames(_data)
         authService.getUser().then((user) => {
@@ -41,23 +41,23 @@ export function Home() {
         })
         setSpinner(false)
         const el = eventsRef.current;
-        if (eventsRef.current && el.offsetWidth > el.scrollWidth) {
+        if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
+          setIsOverflowingEvents(true);
+        }
+        else {
           setIsOverflowingEvents(false);
         }
-        else{
-          setIsOverflowingEvents(true);
-        }
         const els = clubsRef.current;
-        if (eventsRef.current && els.offsetWidth > els.scrollWidth) {
-          setIsOverflowingClubs(false);
+        if (eventsRef.current && els.offsetWidth < els.scrollWidth) {
+          setIsOverflowingClubs(true);
         }
-        else{
-          setIsOverflowingEvents(true);
+        else {
+          setIsOverflowingEvents(false);
         }
-     
+
       })
     })
-  },[])
+  }, [])
 
   const scrollClubs = (scrollOffset) => {
     clubsRef.current.scrollLeft += scrollOffset;
@@ -78,8 +78,8 @@ export function Home() {
           <Carousel useKeyboardArrows={true} dynamicHeight={true} showThumbs={false} infiniteLoop={true} showArrows={true} autoPlay={true} interval={5000} >
             {eventsData.map((val, index) => (
               <div className="slide" key={index} onClick={() => navigate(`/college-events-index-page?id=${val.eventId}`)} >
-                <img alt="sample_file" src={val.pictureUrl}  style={{filter:"blur(2px)"}} />
-                <img alt="sample_file" src={val.posterUrl}  style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '50%', height: '100%' }} />
+                <img alt="sample_file" src={val.pictureUrl} style={{ filter: "blur(2px)" }} />
+                <img alt="sample_file" src={val.posterUrl} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '50%', height: '100%' }} />
               </div>
             ))}
           </Carousel>
@@ -92,9 +92,9 @@ export function Home() {
         <div className="rowDisplay" id='events-row-display' ref={eventsRef}>
           {eventsData.map((item) => {
             return (
-              <div  id='event-card' key={item.eventId}>
+              <div id='event-card' key={item.eventId}>
                 <EventCardDisplay
-                  ActiveColor={roles.includes(item.accessLevel)?"rgb(0, 255, 0)":"rgb(255, 0, 0)"}
+                  ActiveColor={roles.includes(item.accessLevel) ? "rgb(0, 255, 0)" : "rgb(255, 0, 0)"}
                   imgsrc={item.pictureUrl}
                   title={item.name}
                   modeOfEvent={item.modeOfEvent}
@@ -121,7 +121,7 @@ export function Home() {
             )
           })}
         </div>
-        {isOverflowingCLubs ? <button className='nav-buttons' onClick={() => scrollClubs(200)}>&#5171;</button> :null}
+        {isOverflowingCLubs ? <button className='nav-buttons' onClick={() => scrollClubs(200)}>&#5171;</button> : null}
       </div>
     </React.Fragment>
 

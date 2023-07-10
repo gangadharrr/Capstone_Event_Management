@@ -12,7 +12,7 @@ import { ApplicationPaths } from '../../components/api-authorization/ApiAuthoriz
 export function ClubsIndexPage() {
   const [notifications, setNotifications] = useState(false)
   const location = useLocation()
-  const [isOverflowingEvents, setIsOverflowingEvents] = useState(false);
+  const [isOverflowingEvents, setIsOverflowingEvents] = useState(true);
   const [spinner, setSpinner] = useState(true);
   const queryParameters = new URLSearchParams(location.search)
   const navigate = useNavigate()
@@ -82,6 +82,9 @@ export function ClubsIndexPage() {
         const el = eventsRef.current;
         if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
           setIsOverflowingEvents(true);
+        }
+        else {
+          setIsOverflowingEvents(false);
         }
       }).catch((error) => {
         console.log(error);

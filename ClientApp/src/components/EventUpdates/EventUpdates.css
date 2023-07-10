@@ -1,0 +1,63 @@
+.events-updates-president-box
+{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    border: 2px solid #ccc;
+    padding: 1% 1% 1% 1%;
+    border-radius: 7px;
+}
+.events-updates-president-box-buttons
+{
+    display: inline-flex;
+    justify-content: flex-end;
+    column-gap: 1%;
+    margin: 2% 0% 0% 0%;
+}
+.events-updates-president-box-header
+{
+    color: #aaa;
+}
+.event-update-message-box
+{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    border: 1px solid #ccc;
+    padding: 1% 1% 1% 1%;
+    border-radius: 7px;
+}
+.event-update-message-header
+{
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+    color: #aaa;
+}
+.event-update-message-time
+{
+    display: inline-flex;
+    justify-content: flex-end;  
+    column-gap: 10%;
+    width: 30%;
+}
+.event-update-message-time p
+{
+    font-size: 80%;
+}
+.event-update-message-box 
+{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 90%;
+    word-wrap: break-word;
+}
+.event-update-message-box  a 
+{
+    word-wrap: break-word; 
+}
+.three-dot-icon{
+    color: grey; 
+}
+.three-dot-icon:hover{
+    color: black;
+}

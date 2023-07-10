@@ -908,7 +908,7 @@ export function CollegeEventsPresidentView() {
       <React.Fragment>
         <h1>College Events</h1>
         <p style={{ textAlign: 'right' }}>
-          <Link className='btn btn-primary' to="/college-events-president-create-view">+ Create New</Link>&nbsp;
+          <Link className='btn btn-success' to="/college-events-president-create-view">+ Create New</Link>&nbsp;
         </p>
         <table className="table">
           <thead>
@@ -920,10 +920,10 @@ export function CollegeEventsPresidentView() {
                 Origanizing Club
               </th>
               <th>
-                ModeOfEvent
+                Mode of Event
               </th>
               <th>
-                Date Of Event
+                Date of Event
               </th>
               <th>
                 AvailableSeats
@@ -972,7 +972,7 @@ export function CollegeEventsPresidentView() {
                         }
                       }}
                     >Delete</button> |&nbsp;
-                    <Link className='btn btn-dark' to={"/event-registrations-index-view?id=" + val.eventId+"&returnUrl=/college-events-president-view"}>Event Registrations</Link>
+                    <Link className='btn btn-dark' to={"/event-registrations-index-view?id=" + val.eventId}>Event Registrations</Link>
                   </td>
                 </tr>:<React.Fragment></React.Fragment>
               )

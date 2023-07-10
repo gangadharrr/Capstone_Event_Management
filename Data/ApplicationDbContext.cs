@@ -19,5 +19,6 @@ namespace Capstone_Event_Management.Data
         public DbSet<Subscriptions> Subscriptions { get; set; }
         public DbSet<CollegeEvents> CollegeEvents { get; set; }
         public DbSet<EventRegistrations> EventRegistrations { get; set; }
+        public DbSet<EventUpdates> EventUpdates { get; set; }
     }
 }

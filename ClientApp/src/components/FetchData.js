@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
-import axios from "axios";
 
 export class FetchData extends Component {
   static displayName = FetchData.name;

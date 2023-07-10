@@ -38,7 +38,7 @@ export function ClubMembersIndexView() {
             <React.Fragment>
                 <h1>Club Members</h1>
                 <p style={{ textAlign: 'right' }}>
-                    <Link className='btn btn-primary' to={queryParameters.get('returnUrl')}>Back to List</Link> &nbsp;
+                    <button className='btn btn-primary' onClick={()=>navigate(-1)}>Back to List</button> &nbsp;
                     <CSVLink className='btn btn-success' data={data} filename='Club-Members.csv'>Export to CSV</CSVLink>
                 </p>
                 <table className="table">
@@ -95,6 +95,7 @@ export function ClubMembersIndexView() {
     )
 }
 export function ClubMembersDetailsView() {
+    const navigate = useNavigate()
     const location = useLocation()
     const [spinner, setSpinner] = useState(true);
     const [data1, setData] = useState(null)
@@ -165,7 +166,7 @@ export function ClubMembersDetailsView() {
                 </dl>
             </div>
             <div>
-                <Link className='btn btn-primary' to={'/club-members-index-view'}>Back to List</Link>
+                <button className='btn btn-primary' onClick={()=>navigate(-1)}>Back to List</button>
             </div>
 
         </React.Fragment>}

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, {  useState, useEffect } from 'react';
 import { LoadingAnimation } from '../../components/LoadingAnimation/LoadingAnimation';
 import { CardDisplay } from '../../components/CardDisplay/CardDisplay';
 import axios from 'axios';
