@@ -359,10 +359,10 @@ export function CollegeEventsIndexPage() {
                                         roles.includes("President") ?
                                             <div className="event-index-page-footer-event-updates">
                                                 <EventPresidentUpdates name={MemberUser.userName} email={MemberUser.email} />
-                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage obj={item} /> })}
+                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage editable={false} obj={item} /> })}
                                             </div>
                                             : <div className="event-index-page-footer-event-updates">
-                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage obj={item} /> })}
+                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage editable={false} obj={item} /> })}
                                             </div>
                                     }
                                     {!eventUpdates && !roles.includes("President") ? <p id="no-updates">There are No Updates for this event</p> : <React.Fragment></React.Fragment>}

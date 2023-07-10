@@ -1,9 +1,12 @@
 .events-updates-president-box
 {
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
     display: flex;
     flex-direction: column;
-    width: 50%;
-    border: 2px solid #ccc;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #ccc;
     padding: 1% 1% 1% 1%;
     border-radius: 7px;
 }
@@ -22,7 +25,8 @@
 {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 100%;
+    max-width: 500px;
     border: 1px solid #ccc;
     padding: 1% 1% 1% 1%;
     border-radius: 7px;
@@ -30,6 +34,7 @@
 .event-update-message-header
 {
     display: inline-flex;
+    align-items: baseline;
     width: 100%;
     justify-content: space-between;
     color: #aaa;
@@ -38,8 +43,8 @@
 {
     display: inline-flex;
     justify-content: flex-end;  
-    column-gap: 10%;
-    width: 30%;
+    width: 100%;
+    align-items: baseline;
 }
 .event-update-message-time p
 {
@@ -55,9 +60,11 @@
 {
     word-wrap: break-word; 
 }
-.three-dot-icon{
-    color: grey; 
+#dropdown-sm-btn
+{
+    color: #aaa;
 }
-.three-dot-icon:hover{
+#dropdown-sm-btn:hover
+{
     color: black;
 }
