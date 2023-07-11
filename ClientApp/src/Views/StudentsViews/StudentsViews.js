@@ -53,14 +53,16 @@ export function StudentsIndexView() {
                 jsonData = JSON.parse(JSON.stringify(jsonData));
                 if(headers.toString()===['name', 'email', 'batch', 'section', 'rollNumber', 'normalizedDegree', 'normalizedBranch'].toString()){
                     authService.getAccessToken().then(token => {
-                        jsonData.map((studentRecord, index) => {
-                            axios.post('students', studentRecord,
-                                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                            ).then((response) => {
-                                setProgressBar({ value: parseInt(((index + 1) / jsonData.length) * 100), status: true });
-                            }
-                            ).catch((error) => {
-                                console.log(error)
+                        authService.getUser().then(user => {
+                            jsonData.map((studentRecord, index) => {
+                                axios.post(`students/${user.name}`, studentRecord,
+                                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                                ).then((response) => {
+                                    setProgressBar({ value: parseInt(((index + 1) / jsonData.length) * 100), status: true });
+                                }
+                                ).catch((error) => {
+                                    console.log(error)
+                                })
                             })
                         })
                     }
