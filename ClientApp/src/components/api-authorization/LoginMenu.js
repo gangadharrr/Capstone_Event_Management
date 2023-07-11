@@ -1,5 +1,5 @@
 import React, { Component, Fragment, useState } from 'react';
-import { DropdownItem, DropdownMenu, NavbarToggler, Navbar, Collapse, NavItem, NavLink, DropdownToggle, Dropdown } from 'reactstrap';
+import { DropdownItem, DropdownMenu, NavbarToggler, Navbar, Collapse, NavItem, NavLink, DropdownToggle, Dropdown, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 import authService from './AuthorizeService';
@@ -79,24 +79,22 @@ export class LoginMenu extends Component {
           <DropdownItem > <NavLink replace tag={Link} className="text-light" to={logoutPath} state={logoutState}>Logout</NavLink></DropdownItem>
         </DropdownMenu>
       </Dropdown>
-
-      {/* <NavItem>
-        <NavLink tag={Link} className="text-dark" to={profilePath} style={{display:"flex",flexDirection:"row"}}> <AdvancedImage cldImg={myImg} style={{height:"39px",width:"39px",borderRadius:"50%"}} onError={e => e.target.src = "https://res.cloudinary.com/dujyzevpx/image/upload/v1687345453/Images/Account_Logo_jton6z.png"} id="profile-picture-nav"  /> {userName.split("@")[0]}</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink replace tag={Link} className="text-dark" to={logoutPath} state={logoutState}>Logout</NavLink>
-      </NavItem> */}
     </Fragment>);
   }
 
   anonymousView(registerPath, loginPath) {
-    return (  <ul className="navbar-nav flex-grow" style={{ display: "flex", columnGap: "10%",marginRight: "5%" }}>
+    return (  
+  //   <ul className="navbar-nav flex-grow" style={{ display: "flex", columnGap: "10%",marginRight: "5%" }}>
+  // </ul>
+  <React.Fragment >
+
       <NavItem>
-        <NavLink tag={Link} id='nav-item'  className="text-light" to={registerPath}>Register</NavLink>
+        <NavLink tag={Link} id='nav-item' className="text-light" to={registerPath}>Register</NavLink>
       </NavItem>
       <NavItem>
         <NavLink tag={Link} id='nav-item'  className="text-light" to={loginPath}>Login</NavLink>
       </NavItem>
-  </ul>);
+  </React.Fragment>
+  );
   }
 }

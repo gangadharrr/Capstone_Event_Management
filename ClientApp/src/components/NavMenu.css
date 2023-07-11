@@ -4,7 +4,9 @@
   word-break: break-all;
   align-self: center;
 }
-
+.navbar .container-fluid {
+  justify-content: space-evenly;
+}
 html {
   font-size: 14px;
 }
