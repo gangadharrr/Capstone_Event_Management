@@ -28,7 +28,6 @@ export function ClubMembersIndexView() {
                 })
             })
             setSpinner(false)
-            console.log(data)
         })
     },[])
 

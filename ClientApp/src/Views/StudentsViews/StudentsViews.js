@@ -375,23 +375,22 @@ export function StudentsEditView() {
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_email === '' && data[0].err_batch === '' && data[0].err_section === '' && data[0].err_rollNumber === '' && data[0].err_normalizedDegree === '' && data[0].err_normalizedBranch === '') {
             authService.getAccessToken().then(token => {
-                axios.put(`students/${queryParameters.get('id')}`, {
-                    name: data[0].name,
-                    email: data[0].email.toLowerCase(),
-                    batch: data[0].batch,
-                    section: data[0].section,
-                    rollNumber: parseInt(data[0].rollNumber),
-                    normalizedDegree: data[0].normalizedDegree,
-                    normalizedBranch: data[0].normalizedBranch,
-                },
-                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                ).then((response) => {
-                    console.log(response)
-                    navigate('/students-index-view')
-                }
-                )
-            }
-            )
+                authService.getUser().then(user => {
+                    axios.put(`students/${user.name}/${queryParameters.get('id')}`, {
+                        name: data[0].name,
+                        email: data[0].email.toLowerCase(),
+                        batch: data[0].batch,
+                        section: data[0].section,
+                        rollNumber: parseInt(data[0].rollNumber),
+                        normalizedDegree: data[0].normalizedDegree,
+                        normalizedBranch: data[0].normalizedBranch,
+                    },
+                        { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                    ).then((response) => {
+                        navigate('/students-index-view')
+                    })
+                })
+            })
         }
         else {
             alert('Invalid Data Entered');

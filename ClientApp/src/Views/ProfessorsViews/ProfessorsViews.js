@@ -52,14 +52,16 @@ export function ProfessorsIndexView() {
                 jsonData = JSON.parse(JSON.stringify(jsonData));
                 if (headers.toString() === ['professorId', 'name', 'email', 'designation', 'normalizedDegree', 'normalizedBranch'].toString()) {
                     authService.getAccessToken().then(token => {
-                        jsonData.map((professorRecord, index) => {
-                            axios.post('professors', professorRecord,
-                                { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                            ).then((response) => {
-                                setProgressBar({ value: parseInt(((index + 1) / jsonData.length) * 100), status: true });
-                            }
-                            ).catch((error) => {
-                                console.log(error)
+                        authService.getUser().then(user => {
+                            jsonData.map((professorRecord, index) => {
+                                axios.post(`professors/${user.name}`, professorRecord,
+                                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                                ).then((response) => {
+                                    setProgressBar({ value: parseInt(((index + 1) / jsonData.length) * 100), status: true });
+                                }
+                                ).catch((error) => {
+                                    console.log(error)
+                                })
                             })
                         })
                     }
@@ -92,12 +94,14 @@ export function ProfessorsIndexView() {
                             data.map(
                                 (val, index) => {
                                     authService.getAccessToken().then(token => {
-                                        axios.delete(`professors/${val.email}`, {
-                                            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-                                        }).then((response) => {
-                                            setProgressBar({ value: parseInt(((index + 1) / data.length) * 100), status: true });
-                                        }).catch((error) => {
-                                            console.log(error)
+                                        authService.getUser().then(user =>{
+                                            axios.delete(`professors/${user.name}/${val.email}`, {
+                                                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                                            }).then((response) => {
+                                                setProgressBar({ value: parseInt(((index + 1) / data.length) * 100), status: true });
+                                            }).catch((error) => {
+                                                console.log(error)
+                                            })
                                         })
                                     })
                                 }
@@ -150,12 +154,14 @@ export function ProfessorsIndexView() {
                                                 onClick={() => {
                                                     if (window.confirm(`Are you sure you want to delete this professor (` + val.email + ")?")) {
                                                         authService.getAccessToken().then(token => {
-                                                            axios.delete(`professors/${val.email}`, {
-                                                                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-                                                            }).then((response) => {
-                                                                navigate("/professors-index-view");
-                                                            }).catch((error) => {
-                                                                console.log(error)
+                                                            authService.getUser().then(user =>{
+                                                                axios.delete(`professors/${user.name}/${val.email}`, {
+                                                                    headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                                                                }).then((response) => {
+                                                                    navigate("/professors-index-view");
+                                                                }).catch((error) => {
+                                                                    console.log(error)
+                                                                })
                                                             })
                                                         })
                                                     }
@@ -215,20 +221,22 @@ export function ProfessorsCreateView() {
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_email === '' && data[0].err_designation === '' && data[0].err_professorId === ''  && data[0].err_normalizedDegree === '' && data[0].err_normalizedBranch === '') {
             authService.getAccessToken().then(token => {
-                axios.post('professors', {
-                    professorId: data[0].professorId,
-                    name: data[0].name,
-                    email: data[0].email.toLowerCase(),
-                    designation: data[0].designation,
-                    normalizedDegree: data[0].normalizedDegree,
-                    normalizedBranch: data[0].normalizedBranch,
-                },
-                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                ).then((response) => {
-                    navigate('/professors-index-view')
-                }
-                ).catch((error) => {
-                    console.log(error)
+                authService.getUser().then(user => {
+                    axios.post(`professors/${user.name}`, {
+                        professorId: data[0].professorId,
+                        name: data[0].name,
+                        email: data[0].email.toLowerCase(),
+                        designation: data[0].designation,
+                        normalizedDegree: data[0].normalizedDegree,
+                        normalizedBranch: data[0].normalizedBranch,
+                    },
+                        { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                    ).then((response) => {
+                        navigate('/professors-index-view')
+                    }
+                    ).catch((error) => {
+                        console.log(error)
+                    })
                 })
             }
             )
@@ -337,20 +345,22 @@ export function ProfessorsEditView() {
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_email === '' && data[0].err_designation === '' && data[0].err_professorId === ''  && data[0].err_normalizedDegree === '' && data[0].err_normalizedBranch === '') {
             authService.getAccessToken().then(token => {
-                axios.put(`professors/${queryParameters.get('id')}` , {
-                    professorId: data[0].professorId,
-                    name: data[0].name,
-                    email: data[0].email.toLowerCase(),
-                    designation: data[0].designation,
-                    normalizedDegree: data[0].normalizedDegree,
-                    normalizedBranch: data[0].normalizedBranch,
-                },
-                    { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
-                ).then((response) => {
-                    navigate('/professors-index-view')
-                }
-                ).catch((error) => {
-                    console.log(error)
+                authService.getUser().then(user => {
+                    axios.put(`professors/${user.name}/${queryParameters.get('id')}` , {
+                        professorId: data[0].professorId,
+                        name: data[0].name,
+                        email: data[0].email.toLowerCase(),
+                        designation: data[0].designation,
+                        normalizedDegree: data[0].normalizedDegree,
+                        normalizedBranch: data[0].normalizedBranch,
+                    },
+                        { headers: !token ? {} : { 'Authorization': `Bearer ${token}` } }
+                    ).then((response) => {
+                        navigate('/professors-index-view')
+                    }
+                    ).catch((error) => {
+                        console.log(error)
+                    })
                 })
             }
             )

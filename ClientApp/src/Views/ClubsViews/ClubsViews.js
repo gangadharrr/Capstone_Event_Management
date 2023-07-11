@@ -216,7 +216,6 @@ export function ClubsCreateView() {
             }
             reader.readAsDataURL(uplodedFile);
         }
-        console.log(data);
     }
     function submitForm() {
         if (data[0].err_name === '' && data[0].err_clubEmail === '' && data[0].err_president === '' && data[0].err_professorIncharge === '' && data[0].err_description === '' && data[0].err_price === '' && data[0].err_availableSeats === '') {
@@ -842,7 +841,6 @@ export function ClubsPresidentEditView() {
             var uplodedFile = eve.target.files[0]
             var reader = new FileReader();
             reader.onloadend = function (e) {
-                console.log(e);
                 let _data = data[0]
                 _data.clubPicture = e.target.result
                 _data['err_clubPicture'] = ''

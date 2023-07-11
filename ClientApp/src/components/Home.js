@@ -48,11 +48,11 @@ export function Home() {
           setIsOverflowingEvents(false);
         }
         const els = clubsRef.current;
-        if (eventsRef.current && els.offsetWidth < els.scrollWidth) {
+        if (clubsRef.current && els.offsetWidth < els.scrollWidth) {
           setIsOverflowingClubs(true);
         }
         else {
-          setIsOverflowingEvents(false);
+          setIsOverflowingClubs(false);
         }
 
       })

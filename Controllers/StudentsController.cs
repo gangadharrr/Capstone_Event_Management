@@ -66,7 +66,6 @@ namespace Capstone_Event_Management.Controllers
             var user = await _userManager.FindByNameAsync(userName);
             if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
-
                 if (id != students.Email)
                 {
                     return BadRequest();
@@ -132,7 +131,7 @@ namespace Capstone_Event_Management.Controllers
             }
             else 
             {
-                return NoContent(); 
+                return Problem("UnAuthorized Access"); 
             }
         }
 

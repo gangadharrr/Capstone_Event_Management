@@ -234,7 +234,6 @@ export function CollegeEventsCreateView() {
       }
       reader.readAsDataURL(uplodedFile);
     }
-    console.log(data[0]);
   }
   function submitForm() {
     if (data[0].err_clubId === '' &&
@@ -554,7 +553,6 @@ export function CollegeEventsEditView() {
       }
       reader.readAsDataURL(uplodedFile);
     }
-    console.log(data[0]);
   }
   function submitForm() {
     if (data[0].err_clubId === '' &&
@@ -1111,7 +1109,6 @@ export function CollegeEventsPresidentCreateView() {
       }
       reader.readAsDataURL(uplodedFile);
     }
-    console.log(data[0]);
   }
   function submitForm() {
     if (data[0].err_clubId === '' &&
@@ -1437,7 +1434,6 @@ export function CollegeEventsPresidentEditView() {
       }
       reader.readAsDataURL(uplodedFile);
     }
-    console.log(data[0]);
   }
   function submitForm() {
     if (data[0].err_clubId === '' &&
