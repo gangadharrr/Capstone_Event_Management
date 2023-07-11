@@ -16,25 +16,22 @@ export function EventUpdatesMessage(props) {
         return d.toDateString();
     }
     async function deleteEventUpdates() {
-        try {
-
-            if (window.confirm(`Are you sure you want to delete this message?`)) {
-                authService.getAccessToken().then(token => {
-                    axios.delete(`eventupdates/${props.obj.messageId}`, {
-                        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-                    }).then((res) => {
-                        window.location.reload()
-                    })
+        if (window.confirm(`Are you sure you want to delete this message?`)) {
+            authService.getAccessToken().then(token => {
+                axios.delete(`eventupdates/${props.user.email}/${props.obj.messageId}`, {
+                    headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+                }).then((res) => {
+                    window.location.reload()
+                }).catch((err) => {
+                    console.log(err)
+                    alert(` Error : ${err.response.statusText}`)
                 })
-            }
-        }
-        catch (err) {
-            alert('Error:Something went wrong')
+            })
         }
     }
     async function putEventUpdates() {
         authService.getAccessToken().then(token => {
-            axios.put(`eventupdates/${props.obj.messageId}`,
+            axios.put(`eventupdates/${props.user.email}/${props.obj.messageId}`,
                 {
                     "messageId": props.obj.messageId,
                     "eventId": props.obj.eventId,
@@ -94,7 +91,7 @@ export function EventUpdatesMessage(props) {
                     setMessage('')
                     window.location.reload()
                 }).catch((err) => {
-                    console.log(err)
+                    alert(` Error : ${err.response.statusText}`)
                 })
         })
     }
@@ -103,7 +100,8 @@ export function EventUpdatesMessage(props) {
             <div className='event-update-message-header'>
                 <b className='event-update-message-user'>@{String(props.obj.email).split('@')[0]}</b>
                 <div className='event-update-message-time'>
-                    <p >{DateFormatter(props.obj.dateTimeNow)}{props.obj.isEdited? " (Edited)" : ""}</p>
+                    <p >{DateFormatter(props.obj.dateTimeNow)}{props.obj.isEdited ? " (Edited)" : ""}</p>
+                    {props.roles.includes('Admin')||props.roles.includes('President') ?
                     <div className="three-dot-icon" style={{ display: "inline-flex" }} >
                         <Dropdown isOpen={dropdownOpen} toggle={() => { setDropdownOpen(!dropdownOpen) }} direction="down" menuRole="listbox" >
                             <DropdownToggle color='plain' size='sm' id='dropdown-sm-btn'><FontAwesomeIcon icon={faEllipsisVertical} /></DropdownToggle>
@@ -114,6 +112,7 @@ export function EventUpdatesMessage(props) {
                         </Dropdown>
 
                     </div>
+                    : ""}
                 </div>
             </div>
             {editable ?

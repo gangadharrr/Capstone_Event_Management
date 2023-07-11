@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Capstone_Event_Management.Data;
 using Capstone_Event_Management.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using static Duende.IdentityServer.Models.IdentityResources;
 
 namespace Capstone_Event_Management.Controllers
 {
@@ -16,9 +18,11 @@ namespace Capstone_Event_Management.Controllers
     public class EventUpdatesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EventUpdatesController(ApplicationDbContext context)
+        public EventUpdatesController(ApplicationDbContext context,UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -54,33 +58,40 @@ namespace Capstone_Event_Management.Controllers
         // PUT: api/EventUpdates/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEventUpdates(int id, EventUpdates eventUpdates)
+        [HttpPut("{email}/{id}")]
+        public async Task<IActionResult> PutEventUpdates(int id,string email,EventUpdates eventUpdates)
         {
-            if (id != eventUpdates.MessageId)
-            {
-                return BadRequest();
-            }
-            eventUpdates.CollegeEvents = await _context.CollegeEvents.FindAsync(eventUpdates.EventId);
-            _context.Entry(eventUpdates).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EventUpdatesExists(id))
+            var user = await _userManager.FindByEmailAsync(email);
+            if (await _userManager.IsInRoleAsync(user, "Admin") || (await _userManager.IsInRoleAsync(user, "President") && eventUpdates.Email == email)) { 
+                if (id != eventUpdates.MessageId)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-                else
-                {
-                    throw;
-                }
-            }
+                eventUpdates.CollegeEvents = await _context.CollegeEvents.FindAsync(eventUpdates.EventId);
+                _context.Entry(eventUpdates).State = EntityState.Modified;
 
-            return NoContent();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EventUpdatesExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
         }
 
         // POST: api/EventUpdates
@@ -89,22 +100,33 @@ namespace Capstone_Event_Management.Controllers
         [HttpPost]
         public async Task<ActionResult<EventUpdates>> PostEventUpdates(EventUpdates eventUpdates)
         {
-          if (_context.EventUpdates == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.EventUpdates'  is null.");
-          }
-            eventUpdates.CollegeEvents =await _context.CollegeEvents.FindAsync(eventUpdates.EventId);
-            _context.EventUpdates.Add(eventUpdates);
-            await _context.SaveChangesAsync();
+            var user = await _userManager.FindByEmailAsync(eventUpdates.Email);
+            if (await _userManager.IsInRoleAsync(user, "President"))
+            {
 
-            return CreatedAtAction("GetEventUpdates", new { id = eventUpdates.MessageId }, eventUpdates);
+              if (_context.EventUpdates == null)
+              {
+                  return Problem("Entity set 'ApplicationDbContext.EventUpdates'  is null.");
+              }
+                eventUpdates.CollegeEvents =await _context.CollegeEvents.FindAsync(eventUpdates.EventId);
+                _context.EventUpdates.Add(eventUpdates);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetEventUpdates", new { id = eventUpdates.MessageId }, eventUpdates);
+            }
+            else
+            {
+                return Problem("Unauthorized Access");
+            }
         }
 
         // DELETE: api/EventUpdates/5
         [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEventUpdates(int id)
+        [HttpDelete("{email}/{id}")]
+        public async Task<IActionResult> DeleteEventUpdates(int id,string email)
         {
+            var user = await _userManager.FindByEmailAsync(email);
+            
             if (_context.EventUpdates == null)
             {
                 return NotFound();
@@ -114,11 +136,18 @@ namespace Capstone_Event_Management.Controllers
             {
                 return NotFound();
             }
+            if (await _userManager.IsInRoleAsync(user, "Admin") || (await _userManager.IsInRoleAsync(user, "President") && eventUpdates.Email == email))
+            { 
+                _context.EventUpdates.Remove(eventUpdates);
+                await _context.SaveChangesAsync();
 
-            _context.EventUpdates.Remove(eventUpdates);
-            await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
 
-            return NoContent();
         }
 
         private bool EventUpdatesExists(int id)

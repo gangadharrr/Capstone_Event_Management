@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import "./CollegeEventsIndexPage.css"
 import { Link } from 'react-router-dom';
@@ -356,13 +356,13 @@ export function CollegeEventsIndexPage() {
                                     <h5>Event Updates</h5>
                                     <br />
                                     {
-                                        roles.includes("President") ?
+                                        roles.includes("President")?
                                             <div className="event-index-page-footer-event-updates">
                                                 <EventPresidentUpdates name={MemberUser.userName} email={MemberUser.email} />
-                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage editable={false} obj={item} /> })}
+                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage editable={false} obj={item} user={MemberUser} roles={roles} /> })}
                                             </div>
                                             : <div className="event-index-page-footer-event-updates">
-                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage editable={false} obj={item} /> })}
+                                                {eventUpdatesData.map(item => { return <EventUpdatesMessage editable={false} obj={item} user={MemberUser} roles={roles} /> })}
                                             </div>
                                     }
                                     {!eventUpdates && !roles.includes("President") ? <p id="no-updates">There are No Updates for this event</p> : <React.Fragment></React.Fragment>}
