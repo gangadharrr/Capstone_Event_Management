@@ -12,8 +12,8 @@ import { useNavigate } from 'react-router-dom';
 
 export function Home() {
   const navigate = useNavigate()
-  const [isOverflowingEvents, setIsOverflowingEvents] = useState(true);
-  const [isOverflowingCLubs, setIsOverflowingClubs] = useState(true);
+  const [isOverflowingEvents, setIsOverflowingEvents] = useState(false);
+  const [isOverflowingCLubs, setIsOverflowingClubs] = useState(false);
   const [clubData, setClubData] = useState(null);
   const [eventsData, setEventsData] = useState(null);
   const [clubNames, setClubNames] = useState([])
@@ -40,25 +40,27 @@ export function Home() {
           console.log(error);
         })
         setSpinner(false)
-        const el = eventsRef.current;
-        if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
-          setIsOverflowingEvents(true);
-        }
-        else {
-          setIsOverflowingEvents(false);
-        }
-        const els = clubsRef.current;
-        if (clubsRef.current && els.offsetWidth < els.scrollWidth) {
-          setIsOverflowingClubs(true);
-        }
-        else {
-          setIsOverflowingClubs(false);
-        }
+
 
       })
     })
   }, [])
-
+  useEffect(() => {
+    const el = eventsRef.current;
+    if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
+      setIsOverflowingEvents(true);
+    }
+    else {
+      setIsOverflowingEvents(false);
+    }
+    const els = clubsRef.current;
+    if (clubsRef.current && els.offsetWidth < els.scrollWidth) {
+      setIsOverflowingClubs(true);
+    }
+    else {
+      setIsOverflowingClubs(false);
+    }
+  })
   const scrollClubs = (scrollOffset) => {
     clubsRef.current.scrollLeft += scrollOffset;
   };

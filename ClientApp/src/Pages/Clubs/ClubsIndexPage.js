@@ -79,13 +79,6 @@ export function ClubsIndexPage() {
           _data.professorInchargeName = res2.data.name
           setData([_data])
         })
-        const el = eventsRef.current;
-        if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
-          setIsOverflowingEvents(true);
-        }
-        else {
-          setIsOverflowingEvents(false);
-        }
       }).catch((error) => {
         console.log(error);
       })
@@ -95,6 +88,13 @@ export function ClubsIndexPage() {
   }, [])
 
   useEffect(() => {
+    const el = eventsRef.current;
+    if (eventsRef.current && el.offsetWidth < el.scrollWidth) {
+      setIsOverflowingEvents(true);
+    }
+    else {
+      setIsOverflowingEvents(false);
+    }
     authService.getUser().then(user => {
       authService.getAccessToken().then(token => {
         axios.get(`customidentityrole/${user.name}/${queryParameters.get('id')}`, {
