@@ -305,7 +305,7 @@ export function CollegeEventsIndexPage() {
                                     {roles === null
                                         ? <Link className='btn btn-outline-primary' to={ApplicationPaths.Login} id='register-button'  >Login to Register</Link>
                                         : !roles.includes(val.accessLevel) ? <button className='btn btn-outline-danger' id='register-button' disabled >No Access</button>
-                                            : val.availableSeats === 0 || val.lastDayToRegister - new Date() < 0 || !roles.includes(val.accessLevel)
+                                            : val.availableSeats === 0 || new Date(val.lastDayToRegister) < new Date() || !roles.includes(val.accessLevel)
                                                 ? <button className='btn btn-outline-danger' id='register-button' disabled >Registration Closed</button>
                                                 : registered
                                                     ? hover ? <button className='btn btn-danger' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventUnRegistration} id='register-button'>Unregister</button> : <button className='btn btn-outline-success' onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onClick={eventRegistration} id='register-button'>Registered</button>
