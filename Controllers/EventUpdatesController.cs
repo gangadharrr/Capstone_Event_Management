@@ -34,7 +34,8 @@ namespace Capstone_Event_Management.Controllers
           {
               return NotFound();
           }
-            return await _context.EventUpdates.ToListAsync();
+
+            return await _context.EventUpdates.OrderByDescending(e=>e.DateTimeNow).ToListAsync();
         }
 
         // GET: api/EventUpdates/5
