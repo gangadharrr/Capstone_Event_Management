@@ -1,6 +1,6 @@
 import React, { Component, Fragment, useState } from 'react';
 import { DropdownItem, DropdownMenu, NavbarToggler, Navbar, Collapse, NavItem, NavLink, DropdownToggle, Dropdown, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link,Navigate } from 'react-router-dom';
 
 import authService from './AuthorizeService';
 import { ApplicationPaths } from './ApiAuthorizationConstants';
@@ -8,6 +8,7 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "@cloudinary/react"
 import axios from 'axios';
 import { toHtml } from '@fortawesome/fontawesome-svg-core';
+import { Logout } from './Logout';
 
 export class LoginMenu extends Component {
   constructor(props) {
@@ -57,7 +58,6 @@ export class LoginMenu extends Component {
     const cld = new Cloudinary({ cloud: { cloudName: 'dujyzevpx' } });
       const myImg = cld.image(`Images/${userName}`);
       authService.getAccessToken().then(token => {
-        
         axios.get(`customidentityrole/${userName}/1`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((response) => {
@@ -66,8 +66,13 @@ export class LoginMenu extends Component {
             userName:this.state.userName,
             dropdownOpen:this.state.dropdownOpen,
             userDetails:response.data
-          });
-        })
+          })
+        }).catch((error) => {
+        if(error.response.status===401){
+          var logoutObj=new Logout(logoutState)
+          logoutObj.logout(); 
+        }
+      })
       })
 
 
@@ -84,8 +89,6 @@ export class LoginMenu extends Component {
 
   anonymousView(registerPath, loginPath) {
     return (  
-  //   <ul className="navbar-nav flex-grow" style={{ display: "flex", columnGap: "10%",marginRight: "5%" }}>
-  // </ul>
   <React.Fragment >
 
       <NavItem>

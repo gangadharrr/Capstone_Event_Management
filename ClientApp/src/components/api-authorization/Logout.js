@@ -4,6 +4,8 @@ import authService from './AuthorizeService';
 import { AuthenticationResultStatus } from './AuthorizeService';
 import { QueryParameterNames, LogoutActions, ApplicationPaths } from './ApiAuthorizationConstants';
 import { LoadingAnimation } from '../LoadingAnimation/LoadingAnimation';
+import { Link, NavLink } from 'react-router-dom';
+import { Button } from 'reactstrap';
 
 // The main responsibility of this component is to handle the user's logout process.
 // This is the starting point for the logout process, which is usually initiated when a
@@ -34,7 +36,7 @@ export class Logout extends Component {
         this.processLogoutCallback();
         break;
       case LogoutActions.LoggedOut:
-        this.setState({ isReady: true, message: "You successfully logged out!" });
+        this.setState({ isReady: true, message: "User logged out!" });
         break;
       default:
         throw new Error(`Invalid action '${action}'`);
@@ -49,7 +51,7 @@ export class Logout extends Component {
       return <div></div>
     }
     if (!!message) {
-      return (<div>{message}</div>);
+      return (<div style={{ display: 'flex', flexDirection: 'column',height: '100px',minHeight:'300px', justifyContent: 'center', alignItems: 'center'}}><h1>{message}</h1><br/><div><Link tag={Button} className="btn btn-outline-primary" to="/">Go to Home</Link>&nbsp;&nbsp;<Link tag={Button} className="btn btn-outline-success" to={ApplicationPaths.Login}>Login</Link></div></div>);
     } else {
       const action = this.props.action;
       switch (action) {
