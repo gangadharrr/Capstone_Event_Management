@@ -1,23 +1,19 @@
 import React,{useEffect, useState} from 'react'
 import { Link,useNavigate } from 'react-router-dom'
 import "./ProfileCardDisplay.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBellSlash,faBell,faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import authService from '../api-authorization/AuthorizeService'
-import { LoadingAnimation } from '../LoadingAnimation/LoadingAnimation'
+
 
 export function ProfileCardDisplay(props) {
     const [data,setData]=useState(null)
-    const [spinner,setSpinner]=useState(true)
     const navigate = useNavigate()
-    useEffect(() => {
+    useEffect((props) => {
       authService.getAccessToken().then(token => {
         axios.get(`customidentityrole/${props.imgsrc}/1`, {
           headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((response) => {
           setData(response.data)
-          setSpinner(false)
         }).catch((error) => {
           console.log(error)
         })

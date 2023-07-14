@@ -1,11 +1,11 @@
-import { React, useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { React, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import authService from '../api-authorization/AuthorizeService'
 import axios from 'axios'
 import Linkify from 'react-linkify';
 import { DropdownItem, DropdownMenu, DropdownToggle, Dropdown } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical, faL } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import "./EventUpdates.css"
 export function EventUpdatesMessage(props) {
     const [dropdownOpen, setDropdownOpen] = useState(false);

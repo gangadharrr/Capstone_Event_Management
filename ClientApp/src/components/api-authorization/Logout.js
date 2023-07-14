@@ -4,7 +4,7 @@ import authService from './AuthorizeService';
 import { AuthenticationResultStatus } from './AuthorizeService';
 import { QueryParameterNames, LogoutActions, ApplicationPaths } from './ApiAuthorizationConstants';
 import { LoadingAnimation } from '../LoadingAnimation/LoadingAnimation';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
 // The main responsibility of this component is to handle the user's logout process.

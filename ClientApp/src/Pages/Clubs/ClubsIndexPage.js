@@ -50,18 +50,18 @@ export function ClubsIndexPage() {
         setData([response.data])
         axios.get(`clubs`).then((responseClubs) => {
           let _data = []
-          responseClubs.data.map((val) => {
+          for(let val of responseClubs.data){ 
             _data[val.clubId] = val.name
-          })
+          }
           setClubNames(_data)
         })
         axios.get(`collegeevents`).then((res66) => {
           let _data = []
-          res66.data.map((val) => {
+          for(let val of res66.data){
             if (Number(val.clubId) === Number(queryParameters.get('id'))) {
               _data.push(val)
             }
-          })
+          }
           setEventsData(_data)
           setSpinner(false)
         })
